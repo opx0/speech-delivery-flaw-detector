@@ -1,0 +1,1541 @@
+{
+  "$defs": {
+    "AnalyzeOptions": {
+      "additionalProperties": false,
+      "description": "JSON sent beside the audio file. A transcript matching a library text selects the\ncontrast mode, anything else selects the normative mode.",
+      "properties": {
+        "library_text_id": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "minLength": 1,
+              "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "transcript": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "weights": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RubricWeights"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "transcript",
+        "library_text_id",
+        "weights"
+      ],
+      "title": "AnalyzeOptions",
+      "type": "object"
+    },
+    "AudioFile": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_s": {
+          "description": "Time in seconds.",
+          "exclusiveMinimum": 0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "path": {
+          "description": "Forward-slash path relative to the dataset root.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "duration_s",
+        "sample_rate_hz"
+      ],
+      "title": "AudioFile",
+      "type": "object"
+    },
+    "Axis": {
+      "description": "The four delivery axes a judge scores.",
+      "enum": [
+        "cadence",
+        "tone",
+        "pauses",
+        "volume"
+      ],
+      "title": "Axis",
+      "type": "string"
+    },
+    "AxisScore": {
+      "additionalProperties": false,
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/Axis"
+        },
+        "score": {
+          "description": "Score from 0 to 100.",
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "axis",
+        "score",
+        "weight"
+      ],
+      "title": "AxisScore",
+      "type": "object"
+    },
+    "BandExpected": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "const": "band",
+          "default": "band",
+          "type": "string"
+        },
+        "high": {
+          "type": "number"
+        },
+        "low": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "basis",
+        "low",
+        "high"
+      ],
+      "title": "BandExpected",
+      "type": "object"
+    },
+    "BandReference": {
+      "additionalProperties": false,
+      "properties": {
+        "bands_version": {
+          "type": "string"
+        },
+        "basis": {
+          "const": "band",
+          "default": "band",
+          "type": "string"
+        },
+        "n_reference_clips": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "basis",
+        "n_reference_clips",
+        "bands_version"
+      ],
+      "title": "BandReference",
+      "type": "object"
+    },
+    "BandSeries": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "const": "band",
+          "default": "band",
+          "type": "string"
+        },
+        "high": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "low": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "basis",
+        "low",
+        "high"
+      ],
+      "title": "BandSeries",
+      "type": "object"
+    },
+    "BaselineExpected": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "const": "baseline",
+          "default": "baseline",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "basis",
+        "value"
+      ],
+      "title": "BaselineExpected",
+      "type": "object"
+    },
+    "BaselineReference": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "const": "baseline",
+          "default": "baseline",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "text_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "warp": {
+          "items": {
+            "$ref": "#/$defs/WarpAnchor"
+          },
+          "minItems": 2,
+          "type": "array"
+        }
+      },
+      "required": [
+        "basis",
+        "clip_id",
+        "text_id",
+        "warp"
+      ],
+      "title": "BaselineReference",
+      "type": "object"
+    },
+    "BaselineSeries": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "const": "baseline",
+          "default": "baseline",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "basis",
+        "values"
+      ],
+      "title": "BaselineSeries",
+      "type": "object"
+    },
+    "Category": {
+      "description": "Competition category. Extemporaneous has no fixed text, so it never has a flawed mirror.",
+      "enum": [
+        "interpretive_reading",
+        "declamation",
+        "persuasive_oratory",
+        "extemporaneous"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "ClipLabel": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "$ref": "#/$defs/WordAlignment"
+        },
+        "audio": {
+          "$ref": "#/$defs/AudioFile"
+        },
+        "baseline_clip_id": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "minLength": 1,
+              "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "flaws": {
+          "items": {
+            "$ref": "#/$defs/FlawLabel"
+          },
+          "type": "array"
+        },
+        "id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "pipeline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PipelineStamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "$ref": "#/$defs/ClipRole"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "maxLength": 96,
+              "minLength": 1,
+              "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "speaker_sex": {
+          "$ref": "#/$defs/Sex"
+        },
+        "split": {
+          "$ref": "#/$defs/Split"
+        },
+        "text_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text_id",
+        "role",
+        "split",
+        "speaker_sex",
+        "audio",
+        "alignment",
+        "baseline_clip_id",
+        "source_id",
+        "pipeline",
+        "flaws"
+      ],
+      "title": "ClipLabel",
+      "type": "object"
+    },
+    "ClipRole": {
+      "enum": [
+        "gold",
+        "control",
+        "flawed",
+        "natural_reader",
+        "speaker_shifted",
+        "human_clean",
+        "human_flawed",
+        "normative_reference"
+      ],
+      "title": "ClipRole",
+      "type": "string"
+    },
+    "DatasetManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "clips": {
+          "items": {
+            "$ref": "#/$defs/ClipLabel"
+          },
+          "type": "array"
+        },
+        "dataset_version": {
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "type": "integer"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRecord"
+          },
+          "type": "array"
+        },
+        "texts": {
+          "items": {
+            "$ref": "#/$defs/TextRecord"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "dataset_version",
+        "sources",
+        "texts",
+        "clips"
+      ],
+      "title": "DatasetManifest",
+      "type": "object"
+    },
+    "Deviation": {
+      "additionalProperties": false,
+      "description": "The measured gap behind a flaw.\n\n`delta` is observed minus the baseline value, or the signed distance outside the nearest\nband edge. `z_score` is that gap in units of the reference's own variability.",
+      "properties": {
+        "delta": {
+          "type": "number"
+        },
+        "expected": {
+          "discriminator": {
+            "mapping": {
+              "band": "#/$defs/BandExpected",
+              "baseline": "#/$defs/BaselineExpected"
+            },
+            "propertyName": "basis"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BaselineExpected"
+            },
+            {
+              "$ref": "#/$defs/BandExpected"
+            }
+          ]
+        },
+        "feature": {
+          "$ref": "#/$defs/FeatureName"
+        },
+        "observed": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "z_score": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "unit",
+        "observed",
+        "expected",
+        "delta",
+        "z_score"
+      ],
+      "title": "Deviation",
+      "type": "object"
+    },
+    "DoneEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "job_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "report": {
+          "$ref": "#/$defs/Report"
+        },
+        "type": {
+          "const": "done",
+          "default": "done",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "job_id",
+        "report"
+      ],
+      "title": "DoneEvent",
+      "type": "object"
+    },
+    "DragParams": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "drag",
+          "default": "drag",
+          "type": "string"
+        },
+        "rate_factor": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "rate_factor"
+      ],
+      "title": "DragParams",
+      "type": "object"
+    },
+    "EnergyFadeParams": {
+      "additionalProperties": false,
+      "properties": {
+        "drop_db": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "fade_fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "kind": {
+          "const": "energy_fade",
+          "default": "energy_fade",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "drop_db",
+        "fade_fraction"
+      ],
+      "title": "EnergyFadeParams",
+      "type": "object"
+    },
+    "ErrorCode": {
+      "enum": [
+        "unsupported_audio",
+        "too_long",
+        "too_large",
+        "transcript_mismatch",
+        "alignment_failed",
+        "internal"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "Explanation": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string"
+        },
+        "quoted_text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "headline",
+        "detail",
+        "quoted_text"
+      ],
+      "title": "Explanation",
+      "type": "object"
+    },
+    "FailedEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        },
+        "job_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "type": {
+          "const": "failed",
+          "default": "failed",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "job_id",
+        "code",
+        "message"
+      ],
+      "title": "FailedEvent",
+      "type": "object"
+    },
+    "FeatureName": {
+      "description": "Time-series features rendered in the overlay and used as flaw evidence.",
+      "enum": [
+        "speech_rate",
+        "pitch",
+        "pitch_variation",
+        "energy",
+        "pause",
+        "clarity"
+      ],
+      "title": "FeatureName",
+      "type": "string"
+    },
+    "FlawKind": {
+      "enum": [
+        "rush",
+        "drag",
+        "monotone",
+        "hesitation",
+        "pause_collapse",
+        "energy_fade"
+      ],
+      "title": "FlawKind",
+      "type": "string"
+    },
+    "FlawLabel": {
+      "additionalProperties": false,
+      "description": "A ground-truth flaw region. `injection` is set for DSP clips and absent for human ones.",
+      "properties": {
+        "end": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "injection": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "drag": "#/$defs/DragParams",
+                  "energy_fade": "#/$defs/EnergyFadeParams",
+                  "hesitation": "#/$defs/HesitationParams",
+                  "monotone": "#/$defs/MonotoneParams",
+                  "pause_collapse": "#/$defs/PauseCollapseParams",
+                  "rush": "#/$defs/RushParams"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/RushParams"
+                },
+                {
+                  "$ref": "#/$defs/DragParams"
+                },
+                {
+                  "$ref": "#/$defs/MonotoneParams"
+                },
+                {
+                  "$ref": "#/$defs/HesitationParams"
+                },
+                {
+                  "$ref": "#/$defs/PauseCollapseParams"
+                },
+                {
+                  "$ref": "#/$defs/EnergyFadeParams"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "$ref": "#/$defs/FlawKind"
+        },
+        "level": {
+          "enum": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "type": "integer"
+        },
+        "start": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "words": {
+          "$ref": "#/$defs/WordSpan"
+        }
+      },
+      "required": [
+        "kind",
+        "level",
+        "start",
+        "end",
+        "words",
+        "injection"
+      ],
+      "title": "FlawLabel",
+      "type": "object"
+    },
+    "FlawRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/Axis"
+        },
+        "deviation": {
+          "$ref": "#/$defs/Deviation"
+        },
+        "end": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "explanation": {
+          "$ref": "#/$defs/Explanation"
+        },
+        "id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/FlawKind"
+        },
+        "severity": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "start": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "words": {
+          "$ref": "#/$defs/WordSpan"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "axis",
+        "start",
+        "end",
+        "words",
+        "severity",
+        "deviation",
+        "explanation"
+      ],
+      "title": "FlawRegion",
+      "type": "object"
+    },
+    "HesitationParams": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "hesitation",
+          "default": "hesitation",
+          "type": "string"
+        },
+        "silences": {
+          "items": {
+            "$ref": "#/$defs/InsertedSilence"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "silences"
+      ],
+      "title": "HesitationParams",
+      "type": "object"
+    },
+    "InsertedSilence": {
+      "additionalProperties": false,
+      "properties": {
+        "after_word": {
+          "description": "Zero-based index into a word alignment.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "duration_s": {
+          "description": "Time in seconds.",
+          "exclusiveMinimum": 0,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "after_word",
+        "duration_s"
+      ],
+      "title": "InsertedSilence",
+      "type": "object"
+    },
+    "LibraryEntry": {
+      "additionalProperties": false,
+      "description": "A speech the participant can read and be compared against.",
+      "properties": {
+        "baseline_audio_url": {
+          "type": "string"
+        },
+        "baseline_clip_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "duration_s": {
+          "description": "Time in seconds.",
+          "exclusiveMinimum": 0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "text_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "transcript": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text_id",
+        "title",
+        "category",
+        "transcript",
+        "baseline_clip_id",
+        "baseline_audio_url",
+        "duration_s"
+      ],
+      "title": "LibraryEntry",
+      "type": "object"
+    },
+    "License": {
+      "enum": [
+        "public-domain-mark",
+        "cc0",
+        "us-government-work",
+        "cc-by-4.0",
+        "original-recording"
+      ],
+      "title": "License",
+      "type": "string"
+    },
+    "ModelStamp": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "revision"
+      ],
+      "title": "ModelStamp",
+      "type": "object"
+    },
+    "MonotoneParams": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "monotone",
+          "default": "monotone",
+          "type": "string"
+        },
+        "pitch_excursion_retained": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "pitch_excursion_retained"
+      ],
+      "title": "MonotoneParams",
+      "type": "object"
+    },
+    "OverlaySeries": {
+      "additionalProperties": false,
+      "description": "One feature on the participant's clock, with what was expected drawn beside it.",
+      "properties": {
+        "expected": {
+          "discriminator": {
+            "mapping": {
+              "band": "#/$defs/BandSeries",
+              "baseline": "#/$defs/BaselineSeries"
+            },
+            "propertyName": "basis"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BaselineSeries"
+            },
+            {
+              "$ref": "#/$defs/BandSeries"
+            }
+          ]
+        },
+        "feature": {
+          "$ref": "#/$defs/FeatureName"
+        },
+        "hop_s": {
+          "description": "Time in seconds.",
+          "exclusiveMinimum": 0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "participant": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "feature",
+        "hop_s",
+        "participant",
+        "expected"
+      ],
+      "title": "OverlaySeries",
+      "type": "object"
+    },
+    "ParticipantInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "audio_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "duration_s": {
+          "description": "Time in seconds.",
+          "exclusiveMinimum": 0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "filename": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename",
+        "duration_s",
+        "audio_sha256"
+      ],
+      "title": "ParticipantInfo",
+      "type": "object"
+    },
+    "PauseCollapseParams": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "pause_collapse",
+          "default": "pause_collapse",
+          "type": "string"
+        },
+        "pause_retained": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "pause_retained"
+      ],
+      "title": "PauseCollapseParams",
+      "type": "object"
+    },
+    "PipelineStamp": {
+      "additionalProperties": false,
+      "description": "How a derived clip was produced, enough to regenerate it byte for byte.",
+      "properties": {
+        "config_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "seed",
+        "config_hash"
+      ],
+      "title": "PipelineStamp",
+      "type": "object"
+    },
+    "ProgressEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "job_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "stage": {
+          "$ref": "#/$defs/Stage"
+        },
+        "type": {
+          "const": "progress",
+          "default": "progress",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "job_id",
+        "stage",
+        "fraction",
+        "message"
+      ],
+      "title": "ProgressEvent",
+      "type": "object"
+    },
+    "Report": {
+      "additionalProperties": false,
+      "properties": {
+        "axis_scores": {
+          "items": {
+            "$ref": "#/$defs/AxisScore"
+          },
+          "type": "array"
+        },
+        "overall": {
+          "description": "Score from 0 to 100.",
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        "overlay": {
+          "items": {
+            "$ref": "#/$defs/OverlaySeries"
+          },
+          "type": "array"
+        },
+        "participant": {
+          "$ref": "#/$defs/ParticipantInfo"
+        },
+        "reference": {
+          "discriminator": {
+            "mapping": {
+              "band": "#/$defs/BandReference",
+              "baseline": "#/$defs/BaselineReference"
+            },
+            "propertyName": "basis"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BaselineReference"
+            },
+            {
+              "$ref": "#/$defs/BandReference"
+            }
+          ]
+        },
+        "regions": {
+          "items": {
+            "$ref": "#/$defs/FlawRegion"
+          },
+          "type": "array"
+        },
+        "run": {
+          "$ref": "#/$defs/RunStamp"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "type": "integer"
+        },
+        "weights": {
+          "$ref": "#/$defs/RubricWeights"
+        },
+        "words": {
+          "$ref": "#/$defs/WordAlignment"
+        }
+      },
+      "required": [
+        "schema_version",
+        "participant",
+        "reference",
+        "words",
+        "weights",
+        "axis_scores",
+        "overall",
+        "regions",
+        "overlay",
+        "run"
+      ],
+      "title": "Report",
+      "type": "object"
+    },
+    "RightsEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_url": {
+          "type": "string"
+        },
+        "license": {
+          "$ref": "#/$defs/License"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "license",
+        "evidence_url",
+        "verified",
+        "notes"
+      ],
+      "title": "RightsEvidence",
+      "type": "object"
+    },
+    "RubricWeights": {
+      "additionalProperties": false,
+      "properties": {
+        "cadence": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "pauses": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "tone": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "volume": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "cadence",
+        "tone",
+        "pauses",
+        "volume"
+      ],
+      "title": "RubricWeights",
+      "type": "object"
+    },
+    "RunStamp": {
+      "additionalProperties": false,
+      "description": "Everything that must match for two runs to produce the identical report.",
+      "properties": {
+        "config_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "models": {
+          "items": {
+            "$ref": "#/$defs/ModelStamp"
+          },
+          "type": "array"
+        },
+        "package_version": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "package_version",
+        "config_hash",
+        "seed",
+        "models"
+      ],
+      "title": "RunStamp",
+      "type": "object"
+    },
+    "RushParams": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "rush",
+          "default": "rush",
+          "type": "string"
+        },
+        "rate_factor": {
+          "exclusiveMinimum": 1,
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "rate_factor"
+      ],
+      "title": "RushParams",
+      "type": "object"
+    },
+    "Sex": {
+      "enum": [
+        "female",
+        "male",
+        "unspecified"
+      ],
+      "title": "Sex",
+      "type": "string"
+    },
+    "SourceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "audio_url": {
+          "type": "string"
+        },
+        "excerpt_end": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "excerpt_start": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "page_url": {
+          "type": "string"
+        },
+        "rights": {
+          "$ref": "#/$defs/RightsEvidence"
+        },
+        "speaker_name": {
+          "type": "string"
+        },
+        "speaker_sex": {
+          "$ref": "#/$defs/Sex"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "speaker_name",
+        "speaker_sex",
+        "page_url",
+        "audio_url",
+        "excerpt_start",
+        "excerpt_end",
+        "rights"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "Split": {
+      "enum": [
+        "calibration",
+        "test"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "Stage": {
+      "enum": [
+        "decode",
+        "align",
+        "extract",
+        "compare",
+        "explain"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "TextRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "transcript": {
+          "type": "string"
+        },
+        "transcript_url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "category",
+        "transcript",
+        "transcript_url"
+      ],
+      "title": "TextRecord",
+      "type": "object"
+    },
+    "WarpAnchor": {
+      "additionalProperties": false,
+      "description": "Participant time `participant_s` lines up with baseline time `baseline_s`.",
+      "properties": {
+        "baseline_s": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "participant_s": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "participant_s",
+        "baseline_s"
+      ],
+      "title": "WarpAnchor",
+      "type": "object"
+    },
+    "Word": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "end": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "start": {
+          "description": "Time in seconds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "start",
+        "end",
+        "confidence"
+      ],
+      "title": "Word",
+      "type": "object"
+    },
+    "WordAlignment": {
+      "additionalProperties": false,
+      "description": "Words in spoken order, plus the sentence partition used for pause and fade rules.",
+      "properties": {
+        "sentences": {
+          "items": {
+            "$ref": "#/$defs/WordSpan"
+          },
+          "type": "array"
+        },
+        "words": {
+          "items": {
+            "$ref": "#/$defs/Word"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "words",
+        "sentences"
+      ],
+      "title": "WordAlignment",
+      "type": "object"
+    },
+    "WordSpan": {
+      "additionalProperties": false,
+      "description": "Inclusive range of word indices.",
+      "properties": {
+        "first": {
+          "description": "Zero-based index into a word alignment.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "last": {
+          "description": "Zero-based index into a word alignment.",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "first",
+        "last"
+      ],
+      "title": "WordSpan",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "AnalyzeOptions": {
+      "$ref": "#/$defs/AnalyzeOptions"
+    },
+    "DatasetManifest": {
+      "$ref": "#/$defs/DatasetManifest"
+    },
+    "JobEvent": {
+      "discriminator": {
+        "mapping": {
+          "done": "#/$defs/DoneEvent",
+          "failed": "#/$defs/FailedEvent",
+          "progress": "#/$defs/ProgressEvent"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ProgressEvent"
+        },
+        {
+          "$ref": "#/$defs/DoneEvent"
+        },
+        {
+          "$ref": "#/$defs/FailedEvent"
+        }
+      ]
+    },
+    "LibraryEntry": {
+      "$ref": "#/$defs/LibraryEntry"
+    },
+    "Report": {
+      "$ref": "#/$defs/Report"
+    },
+    "RubricWeights": {
+      "$ref": "#/$defs/RubricWeights"
+    }
+  },
+  "required": [
+    "AnalyzeOptions",
+    "DatasetManifest",
+    "JobEvent",
+    "LibraryEntry",
+    "Report",
+    "RubricWeights"
+  ],
+  "title": "Contract",
+  "type": "object"
+}

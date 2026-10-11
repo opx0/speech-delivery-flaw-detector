@@ -1,0 +1,2605 @@
+{
+  "schema_version": 1,
+  "dataset_version": "fixture-1",
+  "sources": [
+    {
+      "id": "librivox-amb",
+      "title": "The Gettysburg Address",
+      "speaker_name": "Ann Boulais",
+      "speaker_sex": "female",
+      "page_url": "https://archive.org/details/gettysburgaddress_150anniv_1311_librivox",
+      "audio_url": "https://archive.org/download/gettysburgaddress_150anniv_1311_librivox/gettysburgaddress_lincoln_amb.mp3",
+      "excerpt_start": 0.0,
+      "excerpt_end": 119.0,
+      "rights": {
+        "license": "public-domain-mark",
+        "evidence_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "verified": true,
+        "notes": "Item metadata on the source page."
+      }
+    },
+    {
+      "id": "librivox-dj",
+      "title": "The Gettysburg Address",
+      "speaker_name": "Drew Johnson",
+      "speaker_sex": "male",
+      "page_url": "https://archive.org/details/gettysburgaddress_150anniv_1311_librivox",
+      "audio_url": "https://archive.org/download/gettysburgaddress_150anniv_1311_librivox/gettysburgaddress_lincoln_dj.mp3",
+      "excerpt_start": 0.0,
+      "excerpt_end": 119.0,
+      "rights": {
+        "license": "public-domain-mark",
+        "evidence_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "verified": true,
+        "notes": "Item metadata on the source page."
+      }
+    }
+  ],
+  "texts": [
+    {
+      "id": "gettysburg-address",
+      "title": "The Gettysburg Address",
+      "category": "declamation",
+      "transcript": "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure. We are met on a great battle-field of that war.",
+      "transcript_url": "https://www.gutenberg.org/files/1065/1065-h/1065-h.htm"
+    }
+  ],
+  "clips": [
+    {
+      "id": "gettysburg-address.gold",
+      "text_id": "gettysburg-address",
+      "role": "gold",
+      "split": "calibration",
+      "speaker_sex": "female",
+      "audio": {
+        "path": "audio/gettysburg-address.gold.flac",
+        "sha256": "dadfa0b124cb50729908bdec5f8620ff1dfb62c9e6a1ed74491f336dda20c230",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": null,
+      "source_id": "librivox-amb",
+      "pipeline": null,
+      "flaws": []
+    },
+    {
+      "id": "gettysburg-address.control",
+      "text_id": "gettysburg-address",
+      "role": "control",
+      "split": "calibration",
+      "speaker_sex": "female",
+      "audio": {
+        "path": "audio/gettysburg-address.control.flac",
+        "sha256": "8a13f024791272680a054f26b58c9cff2f6f6cc7298b40527305ad469a754f2b",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": "gettysburg-address.gold",
+      "source_id": null,
+      "pipeline": {
+        "name": "inject",
+        "version": "0.1.0",
+        "seed": 0,
+        "config_hash": "e6f2ad814692e3f553d63a5535bfef46c030a680e6c3e79ee850dfcf5ae7798a"
+      },
+      "flaws": []
+    },
+    {
+      "id": "gettysburg-address.rush-l3",
+      "text_id": "gettysburg-address",
+      "role": "flawed",
+      "split": "calibration",
+      "speaker_sex": "female",
+      "audio": {
+        "path": "audio/gettysburg-address.rush-l3.flac",
+        "sha256": "8bca8241fcf4e492ecaba3cc92a5e6184c3e413e48792287211e51b5cf676633",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": "gettysburg-address.gold",
+      "source_id": null,
+      "pipeline": {
+        "name": "inject",
+        "version": "0.1.0",
+        "seed": 0,
+        "config_hash": "e6f2ad814692e3f553d63a5535bfef46c030a680e6c3e79ee850dfcf5ae7798a"
+      },
+      "flaws": [
+        {
+          "kind": "rush",
+          "level": 3,
+          "start": 12.75,
+          "end": 15.79,
+          "words": {
+            "first": 30,
+            "last": 37
+          },
+          "injection": {
+            "kind": "rush",
+            "rate_factor": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gettysburg-address.shifted-male",
+      "text_id": "gettysburg-address",
+      "role": "speaker_shifted",
+      "split": "calibration",
+      "speaker_sex": "male",
+      "audio": {
+        "path": "audio/gettysburg-address.shifted-male.flac",
+        "sha256": "d50596e386c1753093e2f703d21199d1fd8915426127f31304552e670ee2462b",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": "gettysburg-address.gold",
+      "source_id": null,
+      "pipeline": {
+        "name": "inject",
+        "version": "0.1.0",
+        "seed": 0,
+        "config_hash": "e6f2ad814692e3f553d63a5535bfef46c030a680e6c3e79ee850dfcf5ae7798a"
+      },
+      "flaws": []
+    },
+    {
+      "id": "gettysburg-address.reader-dj",
+      "text_id": "gettysburg-address",
+      "role": "natural_reader",
+      "split": "calibration",
+      "speaker_sex": "male",
+      "audio": {
+        "path": "audio/gettysburg-address.reader-dj.flac",
+        "sha256": "f1e94ecbd5ce51c4ec274daa3839ce85198d2300a0d7369f92f8f28b4262dabb",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": "gettysburg-address.gold",
+      "source_id": "librivox-dj",
+      "pipeline": null,
+      "flaws": []
+    },
+    {
+      "id": "gettysburg-address.human-mono",
+      "text_id": "gettysburg-address",
+      "role": "human_flawed",
+      "split": "test",
+      "speaker_sex": "female",
+      "audio": {
+        "path": "audio/gettysburg-address.human-mono.flac",
+        "sha256": "42982ce1f963a3be6f627efe6206475ccaa41cc6f1211cfd9033018bf3bd0ca5",
+        "duration_s": 27.22,
+        "sample_rate_hz": 16000
+      },
+      "alignment": {
+        "words": [
+          {
+            "text": "Four",
+            "start": 0.0,
+            "end": 0.38,
+            "confidence": 0.95
+          },
+          {
+            "text": "score",
+            "start": 0.38,
+            "end": 0.76,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 0.76,
+            "end": 1.14,
+            "confidence": 0.95
+          },
+          {
+            "text": "seven",
+            "start": 1.14,
+            "end": 1.52,
+            "confidence": 0.95
+          },
+          {
+            "text": "years",
+            "start": 1.52,
+            "end": 1.9,
+            "confidence": 0.95
+          },
+          {
+            "text": "ago",
+            "start": 1.9,
+            "end": 2.28,
+            "confidence": 0.95
+          },
+          {
+            "text": "our",
+            "start": 2.28,
+            "end": 2.66,
+            "confidence": 0.95
+          },
+          {
+            "text": "fathers",
+            "start": 2.66,
+            "end": 3.04,
+            "confidence": 0.95
+          },
+          {
+            "text": "brought",
+            "start": 3.04,
+            "end": 3.42,
+            "confidence": 0.95
+          },
+          {
+            "text": "forth",
+            "start": 3.42,
+            "end": 3.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 3.8,
+            "end": 4.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "this",
+            "start": 4.18,
+            "end": 4.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "continent,",
+            "start": 4.56,
+            "end": 4.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 5.19,
+            "end": 5.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "new",
+            "start": 5.57,
+            "end": 5.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 5.95,
+            "end": 6.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 6.58,
+            "end": 6.96,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 6.96,
+            "end": 7.34,
+            "confidence": 0.95
+          },
+          {
+            "text": "Liberty,",
+            "start": 7.34,
+            "end": 7.72,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 7.97,
+            "end": 8.35,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated",
+            "start": 8.35,
+            "end": 8.73,
+            "confidence": 0.95
+          },
+          {
+            "text": "to",
+            "start": 8.73,
+            "end": 9.11,
+            "confidence": 0.95
+          },
+          {
+            "text": "the",
+            "start": 9.11,
+            "end": 9.49,
+            "confidence": 0.95
+          },
+          {
+            "text": "proposition",
+            "start": 9.49,
+            "end": 9.87,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 9.87,
+            "end": 10.25,
+            "confidence": 0.95
+          },
+          {
+            "text": "all",
+            "start": 10.25,
+            "end": 10.63,
+            "confidence": 0.95
+          },
+          {
+            "text": "men",
+            "start": 10.63,
+            "end": 11.01,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 11.01,
+            "end": 11.39,
+            "confidence": 0.95
+          },
+          {
+            "text": "created",
+            "start": 11.39,
+            "end": 11.77,
+            "confidence": 0.95
+          },
+          {
+            "text": "equal.",
+            "start": 11.77,
+            "end": 12.15,
+            "confidence": 0.95
+          },
+          {
+            "text": "Now",
+            "start": 12.75,
+            "end": 13.13,
+            "confidence": 0.95
+          },
+          {
+            "text": "we",
+            "start": 13.13,
+            "end": 13.51,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 13.51,
+            "end": 13.89,
+            "confidence": 0.95
+          },
+          {
+            "text": "engaged",
+            "start": 13.89,
+            "end": 14.27,
+            "confidence": 0.95
+          },
+          {
+            "text": "in",
+            "start": 14.27,
+            "end": 14.65,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 14.65,
+            "end": 15.03,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 15.03,
+            "end": 15.41,
+            "confidence": 0.95
+          },
+          {
+            "text": "civil",
+            "start": 15.41,
+            "end": 15.79,
+            "confidence": 0.95
+          },
+          {
+            "text": "war,",
+            "start": 15.79,
+            "end": 16.17,
+            "confidence": 0.95
+          },
+          {
+            "text": "testing",
+            "start": 16.42,
+            "end": 16.8,
+            "confidence": 0.95
+          },
+          {
+            "text": "whether",
+            "start": 16.8,
+            "end": 17.18,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 17.18,
+            "end": 17.56,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation,",
+            "start": 17.56,
+            "end": 17.94,
+            "confidence": 0.95
+          },
+          {
+            "text": "or",
+            "start": 18.19,
+            "end": 18.57,
+            "confidence": 0.95
+          },
+          {
+            "text": "any",
+            "start": 18.57,
+            "end": 18.95,
+            "confidence": 0.95
+          },
+          {
+            "text": "nation",
+            "start": 18.95,
+            "end": 19.33,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 19.33,
+            "end": 19.71,
+            "confidence": 0.95
+          },
+          {
+            "text": "conceived",
+            "start": 19.71,
+            "end": 20.09,
+            "confidence": 0.95
+          },
+          {
+            "text": "and",
+            "start": 20.09,
+            "end": 20.47,
+            "confidence": 0.95
+          },
+          {
+            "text": "so",
+            "start": 20.47,
+            "end": 20.85,
+            "confidence": 0.95
+          },
+          {
+            "text": "dedicated,",
+            "start": 20.85,
+            "end": 21.23,
+            "confidence": 0.95
+          },
+          {
+            "text": "can",
+            "start": 21.48,
+            "end": 21.86,
+            "confidence": 0.95
+          },
+          {
+            "text": "long",
+            "start": 21.86,
+            "end": 22.24,
+            "confidence": 0.95
+          },
+          {
+            "text": "endure.",
+            "start": 22.24,
+            "end": 22.62,
+            "confidence": 0.95
+          },
+          {
+            "text": "We",
+            "start": 23.22,
+            "end": 23.6,
+            "confidence": 0.95
+          },
+          {
+            "text": "are",
+            "start": 23.6,
+            "end": 23.98,
+            "confidence": 0.95
+          },
+          {
+            "text": "met",
+            "start": 23.98,
+            "end": 24.36,
+            "confidence": 0.95
+          },
+          {
+            "text": "on",
+            "start": 24.36,
+            "end": 24.74,
+            "confidence": 0.95
+          },
+          {
+            "text": "a",
+            "start": 24.74,
+            "end": 25.12,
+            "confidence": 0.95
+          },
+          {
+            "text": "great",
+            "start": 25.12,
+            "end": 25.5,
+            "confidence": 0.95
+          },
+          {
+            "text": "battle-field",
+            "start": 25.5,
+            "end": 25.88,
+            "confidence": 0.95
+          },
+          {
+            "text": "of",
+            "start": 25.88,
+            "end": 26.26,
+            "confidence": 0.95
+          },
+          {
+            "text": "that",
+            "start": 26.26,
+            "end": 26.64,
+            "confidence": 0.95
+          },
+          {
+            "text": "war.",
+            "start": 26.64,
+            "end": 27.02,
+            "confidence": 0.95
+          }
+        ],
+        "sentences": [
+          {
+            "first": 0,
+            "last": 29
+          },
+          {
+            "first": 30,
+            "last": 53
+          },
+          {
+            "first": 54,
+            "last": 63
+          }
+        ]
+      },
+      "baseline_clip_id": "gettysburg-address.gold",
+      "source_id": null,
+      "pipeline": null,
+      "flaws": [
+        {
+          "kind": "monotone",
+          "level": 2,
+          "start": 0.0,
+          "end": 13.51,
+          "words": {
+            "first": 0,
+            "last": 31
+          },
+          "injection": null
+        }
+      ]
+    }
+  ]
+}

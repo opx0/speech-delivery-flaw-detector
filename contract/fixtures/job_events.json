@@ -1,0 +1,43 @@
+[
+  {
+    "type": "progress",
+    "job_id": "job-0001",
+    "stage": "decode",
+    "fraction": 1.0,
+    "message": "decode done"
+  },
+  {
+    "type": "progress",
+    "job_id": "job-0001",
+    "stage": "align",
+    "fraction": 1.0,
+    "message": "align done"
+  },
+  {
+    "type": "progress",
+    "job_id": "job-0001",
+    "stage": "extract",
+    "fraction": 1.0,
+    "message": "extract done"
+  },
+  {
+    "type": "progress",
+    "job_id": "job-0001",
+    "stage": "compare",
+    "fraction": 1.0,
+    "message": "compare done"
+  },
+  {
+    "type": "progress",
+    "job_id": "job-0001",
+    "stage": "explain",
+    "fraction": 1.0,
+    "message": "explain done"
+  },
+  {
+    "type": "failed",
+    "job_id": "job-0002",
+    "code": "transcript_mismatch",
+    "message": "The audio does not match the transcript."
+  }
+]
