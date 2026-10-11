@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.flac binary
+*.wav binary
+*.mp3 binary
+contract/schema/*.json linguist-generated=true
+contract/fixtures/*.json linguist-generated=true
+web/src/contract/generated.ts linguist-generated=true

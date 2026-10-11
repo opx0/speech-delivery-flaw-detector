@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.pyright/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+web/dist/
+*.tsbuildinfo
+
+# Local artifacts that are rebuilt, never committed
+.cache/
+models/
+data/work/
+data/raw/
+runs/
+*.log
+.env
+.env.*
+!.env.example
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Agent and assistant tooling (never part of this repository)
+.delta/
+.agents/
+.agent/
+.claude/
+.cursor/
+.cursorrules
+.codex/
+.gemini/
+.windsurf/
+.windsurfrules
+.aider*
+.opencode/
+.continue/
+.roo/
+.cline/
+.zed/
+.mcp.json
+AGENTS.md
+AGENT.md
+CLAUDE.md
+GEMINI.md
+.github/copilot-instructions.md
