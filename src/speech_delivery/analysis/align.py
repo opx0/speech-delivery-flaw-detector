@@ -112,3 +112,23 @@ def align(audio: Audio, transcript: str) -> WordAlignment:
             )
             offset += len(spelling)
     return WordAlignment(words=tuple(words), sentences=sentence_spans(written))
+
+
+def heard_characters(audio: Audio) -> list[tuple[str, float]]:
+    """What the model hears, as (letter, seconds) pairs from a greedy CTC decode.
+
+    The letters are noisy and carry no word boundaries. They are used to find which part of a
+    known text a recording covers, never as a transcript.
+    """
+    labels = torchaudio.pipelines.MMS_FA.get_labels(star=None)
+    frame_s = _FRAME_SAMPLES / SAMPLE_RATE
+    with _MODEL_LOCK, torch.inference_mode():
+        emission = _emission(audio, _model())
+    best = emission[0].argmax(dim=-1).tolist()
+    heard: list[tuple[str, float]] = []
+    previous = 0
+    for frame, label in enumerate(best):
+        if label != 0 and label != previous:
+            heard.append((labels[label], frame * frame_s))
+        previous = label
+    return heard
