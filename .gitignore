@@ -27,6 +27,7 @@ runs/
 .env
 .env.*
 !.env.example
+.scratch*/
 
 # Editors and OS
 .vscode/

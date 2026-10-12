@@ -7,6 +7,17 @@ license = { file = "LICENSE" }
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "pydantic>=2.9,<3",
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "soundfile>=0.12",
+    "librosa>=0.11",
+    "praat-parselmouth>=0.4.5",
+    "torch==2.6.0",
+    "torchaudio==2.6.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "python-multipart>=0.0.12",
+    "httpx>=0.27",
 ]
 
 [dependency-groups]
@@ -15,6 +26,18 @@ dev = [
     "pyright>=1.1.380",
     "ruff>=0.7",
 ]
+
+[tool.uv]
+index-strategy = "unsafe-best-match"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }
 
 [build-system]
 requires = ["hatchling"]
@@ -34,7 +57,41 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 include = ["src", "tests", "scripts"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"
+reportMissingTypeStubs = false
+
+# The DSP packages call numpy, scipy, librosa, parselmouth and torch, whose public types are
+# partly unknown. Strict stays on for the contract, the API and every package boundary.
+[[tool.pyright.executionEnvironments]]
+root = "src/speech_delivery/analysis"
+extraPaths = ["src"]
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+
+[[tool.pyright.executionEnvironments]]
+root = "src/speech_delivery/dataset"
+extraPaths = ["src"]
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+
+[[tool.pyright.executionEnvironments]]
+root = "src/speech_delivery/evaluation"
+extraPaths = ["src"]
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+
+[[tool.pyright.executionEnvironments]]
+root = "."
+extraPaths = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra --import-mode=importlib"
