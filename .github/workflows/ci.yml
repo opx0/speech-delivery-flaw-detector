@@ -5,17 +5,27 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  TORCH_HOME: ${{ github.workspace }}/models/torch
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: System audio tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg espeak-ng
       - uses: astral-sh/setup-uv@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: web/package-lock.json
+      - name: Cache the forced-alignment model
+        uses: actions/cache@v4
+        with:
+          path: models/torch
+          key: mms-fa-v1
       - run: make setup
       - run: make check
       - name: Generated files are up to date
