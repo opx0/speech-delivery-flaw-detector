@@ -28,7 +28,16 @@ from .dataset import (
     Split,
     TextRecord,
 )
-from .jobs import ErrorCode, FailedEvent, JobEvent, ProgressEvent, Stage
+from .jobs import (
+    DemoClip,
+    ErrorCode,
+    FailedEvent,
+    JobEvent,
+    LibraryEntry,
+    LibraryListing,
+    ProgressEvent,
+    Stage,
+)
 from .report import (
     AxisScore,
     BandExpected,
@@ -395,6 +404,34 @@ def job_events() -> list[JobEvent]:
     return events
 
 
+def library_listing() -> LibraryListing:
+    gold = manifest().clips[0]
+    return LibraryListing(
+        entries=(
+            LibraryEntry(
+                text_id=TEXT_ID,
+                title="The Gettysburg Address",
+                category=Category.DECLAMATION,
+                transcript=TRANSCRIPT,
+                baseline_clip_id=gold.id,
+                baseline_audio_url=f"/api/audio/{gold.id}",
+                duration_s=gold.audio.duration_s,
+            ),
+        ),
+        demos=(
+            DemoClip(
+                clip_id=f"{TEXT_ID}.rush-l3",
+                text_id=TEXT_ID,
+                title="Rushed middle section",
+                description="The same address with one stretch read 1.5 times too fast.",
+                audio_url=f"/api/audio/{TEXT_ID}.rush-l3",
+                flaw_kinds=(FlawKind.RUSH,),
+                level=3,
+            ),
+        ),
+    )
+
+
 def render_all() -> dict[str, str]:
     """File name to JSON text, in the canonical form the repository commits."""
     return {
@@ -403,6 +440,7 @@ def render_all() -> dict[str, str]:
         "dataset_manifest.json": manifest().model_dump_json(indent=2) + "\n",
         "job_events.json": TypeAdapter(list[JobEvent]).dump_json(job_events(), indent=2).decode()
         + "\n",
+        "library.json": library_listing().model_dump_json(indent=2) + "\n",
     }
 
 

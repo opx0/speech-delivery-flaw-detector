@@ -177,3 +177,22 @@ class TestDatasetManifest:
         data["texts"][0]["category"] = "extemporaneous"
         with pytest.raises(ValidationError, match="can only be a normative reference"):
             DatasetManifest.model_validate(data)
+
+
+class TestLibraryListing:
+    def test_round_trips_and_keeps_demo_flaw_kinds(self) -> None:
+        from speech_delivery.contract import LibraryListing
+
+        original = fx.library_listing()
+        restored = LibraryListing.model_validate_json(original.model_dump_json())
+        assert restored == original
+        assert restored.demos[0].flaw_kinds == (FlawKind.RUSH,)
+        assert restored.entries[0].baseline_audio_url == "/api/audio/gettysburg-address.gold"
+
+    def test_rejects_a_demo_level_above_four(self) -> None:
+        from speech_delivery.contract import LibraryListing
+
+        data = dump(fx.library_listing())
+        data["demos"][0]["level"] = 5
+        with pytest.raises(ValidationError):
+            LibraryListing.model_validate(data)

@@ -23,11 +23,14 @@ from .dataset import (
 from .features import FeatureTrack, Interval, MatrixTrack, RecordingFeatures, SpeakerNorm
 from .jobs import (
     AnalyzeOptions,
+    DemoClip,
     DoneEvent,
     ErrorCode,
     FailedEvent,
+    JobCreated,
     JobEvent,
     LibraryEntry,
+    LibraryListing,
     ProgressEvent,
     Stage,
 )
@@ -58,6 +61,7 @@ __all__ = [
     "ClipLabel",
     "ClipRole",
     "DatasetManifest",
+    "DemoClip",
     "Deviation",
     "Direction",
     "DoneEvent",
@@ -70,8 +74,10 @@ __all__ = [
     "FlawLabel",
     "FlawRegion",
     "Interval",
+    "JobCreated",
     "JobEvent",
     "LibraryEntry",
+    "LibraryListing",
     "License",
     "MatrixTrack",
     "OverlaySeries",

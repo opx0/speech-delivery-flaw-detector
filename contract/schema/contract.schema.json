@@ -440,6 +440,63 @@
       "title": "DatasetManifest",
       "type": "object"
     },
+    "DemoClip": {
+      "additionalProperties": false,
+      "description": "A dataset clip a visitor can analyze without recording anything. The true flaws are\nlisted so the demo can show the detector against a known answer.",
+      "properties": {
+        "audio_url": {
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "flaw_kinds": {
+          "items": {
+            "$ref": "#/$defs/FlawKind"
+          },
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "maximum": 4,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "text_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "clip_id",
+        "text_id",
+        "title",
+        "description",
+        "audio_url",
+        "flaw_kinds",
+        "level"
+      ],
+      "title": "DemoClip",
+      "type": "object"
+    },
     "Deviation": {
       "additionalProperties": false,
       "description": "The measured gap behind a flaw.\n\n`delta` is observed minus the baseline value, or the signed distance outside the nearest\nband edge. `z_score` is that gap in units of the reference's own variability.",
@@ -829,6 +886,23 @@
       "title": "InsertedSilence",
       "type": "object"
     },
+    "JobCreated": {
+      "additionalProperties": false,
+      "description": "The response to `POST /api/jobs`. Events arrive on `GET /api/jobs/{job_id}/events`.",
+      "properties": {
+        "job_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "job_id"
+      ],
+      "title": "JobCreated",
+      "type": "object"
+    },
     "LibraryEntry": {
       "additionalProperties": false,
       "description": "A speech the participant can read and be compared against.",
@@ -874,6 +948,30 @@
         "duration_s"
       ],
       "title": "LibraryEntry",
+      "type": "object"
+    },
+    "LibraryListing": {
+      "additionalProperties": false,
+      "description": "The response to `GET /api/library`.",
+      "properties": {
+        "demos": {
+          "items": {
+            "$ref": "#/$defs/DemoClip"
+          },
+          "type": "array"
+        },
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/LibraryEntry"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "entries",
+        "demos"
+      ],
+      "title": "LibraryListing",
       "type": "object"
     },
     "License": {
@@ -1497,6 +1595,9 @@
     "DatasetManifest": {
       "$ref": "#/$defs/DatasetManifest"
     },
+    "JobCreated": {
+      "$ref": "#/$defs/JobCreated"
+    },
     "JobEvent": {
       "discriminator": {
         "mapping": {
@@ -1521,6 +1622,9 @@
     "LibraryEntry": {
       "$ref": "#/$defs/LibraryEntry"
     },
+    "LibraryListing": {
+      "$ref": "#/$defs/LibraryListing"
+    },
     "Report": {
       "$ref": "#/$defs/Report"
     },
@@ -1531,8 +1635,10 @@
   "required": [
     "AnalyzeOptions",
     "DatasetManifest",
+    "JobCreated",
     "JobEvent",
     "LibraryEntry",
+    "LibraryListing",
     "Report",
     "RubricWeights"
   ],

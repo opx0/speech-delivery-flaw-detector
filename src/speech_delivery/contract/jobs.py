@@ -8,6 +8,7 @@ from pydantic import Field
 from .dataset import Category
 from .report import Report
 from .rubric import RubricWeights
+from .taxonomy import FlawKind
 from .units import ContractModel, Identifier, Seconds, UnitInterval
 
 MAX_UPLOAD_SECONDS = 600
@@ -50,6 +51,32 @@ class LibraryEntry(ContractModel):
     baseline_clip_id: Identifier
     baseline_audio_url: str
     duration_s: Seconds = Field(gt=0)
+
+
+class DemoClip(ContractModel):
+    """A dataset clip a visitor can analyze without recording anything. The true flaws are
+    listed so the demo can show the detector against a known answer."""
+
+    clip_id: Identifier
+    text_id: Identifier
+    title: str
+    description: str
+    audio_url: str
+    flaw_kinds: tuple[FlawKind, ...]
+    level: int | None = Field(default=None, ge=0, le=4)
+
+
+class LibraryListing(ContractModel):
+    """The response to `GET /api/library`."""
+
+    entries: tuple[LibraryEntry, ...]
+    demos: tuple[DemoClip, ...]
+
+
+class JobCreated(ContractModel):
+    """The response to `POST /api/jobs`. Events arrive on `GET /api/jobs/{job_id}/events`."""
+
+    job_id: Identifier
 
 
 class ProgressEvent(ContractModel):

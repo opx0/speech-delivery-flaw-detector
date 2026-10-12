@@ -12,6 +12,7 @@ const roots = {
   "report_normative.json": "Report",
   "dataset_manifest.json": "DatasetManifest",
   "job_events.json": "JobEvent",
+  "library.json": "LibraryListing",
 };
 
 let failures = 0;

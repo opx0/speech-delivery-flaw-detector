@@ -69,8 +69,10 @@ export type ErrorCode =
 export interface Contract {
   AnalyzeOptions: AnalyzeOptions;
   DatasetManifest: DatasetManifest;
+  JobCreated: JobCreated;
   JobEvent: ProgressEvent | DoneEvent | FailedEvent;
   LibraryEntry: LibraryEntry;
+  LibraryListing: LibraryListing;
   Report: Report;
   RubricWeights: RubricWeights;
 }
@@ -324,6 +326,15 @@ export interface TextRecord {
   transcript_url: string;
 }
 /**
+ * The response to `POST /api/jobs`. Events arrive on `GET /api/jobs/{job_id}/events`.
+ *
+ * This interface was referenced by `Contract`'s JSON-Schema
+ * via the `definition` "JobCreated".
+ */
+export interface JobCreated {
+  job_id: string;
+}
+/**
  * This interface was referenced by `Contract`'s JSON-Schema
  * via the `definition` "ProgressEvent".
  */
@@ -567,4 +578,30 @@ export interface LibraryEntry {
   text_id: string;
   title: string;
   transcript: string;
+}
+/**
+ * The response to `GET /api/library`.
+ *
+ * This interface was referenced by `Contract`'s JSON-Schema
+ * via the `definition` "LibraryListing".
+ */
+export interface LibraryListing {
+  demos: DemoClip[];
+  entries: LibraryEntry[];
+}
+/**
+ * A dataset clip a visitor can analyze without recording anything. The true flaws are
+ * listed so the demo can show the detector against a known answer.
+ *
+ * This interface was referenced by `Contract`'s JSON-Schema
+ * via the `definition` "DemoClip".
+ */
+export interface DemoClip {
+  audio_url: string;
+  clip_id: string;
+  description: string;
+  flaw_kinds: FlawKind[];
+  level: number | null;
+  text_id: string;
+  title: string;
 }

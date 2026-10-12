@@ -8,15 +8,17 @@ from pydantic import TypeAdapter
 from pydantic.json_schema import GenerateJsonSchema
 
 from .dataset import DatasetManifest
-from .jobs import AnalyzeOptions, JobEvent, LibraryEntry
+from .jobs import AnalyzeOptions, JobCreated, JobEvent, LibraryEntry, LibraryListing
 from .report import Report
 from .rubric import RubricWeights
 
 ROOTS: dict[str, TypeAdapter[Any]] = {
     "AnalyzeOptions": TypeAdapter(AnalyzeOptions),
     "DatasetManifest": TypeAdapter(DatasetManifest),
+    "JobCreated": TypeAdapter(JobCreated),
     "JobEvent": TypeAdapter(JobEvent),
     "LibraryEntry": TypeAdapter(LibraryEntry),
+    "LibraryListing": TypeAdapter(LibraryListing),
     "Report": TypeAdapter(Report),
     "RubricWeights": TypeAdapter(RubricWeights),
 }

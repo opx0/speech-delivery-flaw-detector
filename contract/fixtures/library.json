@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "text_id": "gettysburg-address",
+      "title": "The Gettysburg Address",
+      "category": "declamation",
+      "transcript": "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal. Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure. We are met on a great battle-field of that war.",
+      "baseline_clip_id": "gettysburg-address.gold",
+      "baseline_audio_url": "/api/audio/gettysburg-address.gold",
+      "duration_s": 27.22
+    }
+  ],
+  "demos": [
+    {
+      "clip_id": "gettysburg-address.rush-l3",
+      "text_id": "gettysburg-address",
+      "title": "Rushed middle section",
+      "description": "The same address with one stretch read 1.5 times too fast.",
+      "audio_url": "/api/audio/gettysburg-address.rush-l3",
+      "flaw_kinds": [
+        "rush"
+      ],
+      "level": 3
+    }
+  ]
+}
