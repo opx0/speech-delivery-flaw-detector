@@ -1,178 +1,161 @@
-# Speech delivery flaw detector: technical report
+# Speech delivery flaw detector
 
-A contrastive speech analytics system for temporal flaw grounding and causal delivery diagnosis.
+Technical report for Track C. Results below come from the full dataset v1 evaluation on an
+NVIDIA RTX 3050 Laptop GPU with PyTorch 2.6.0+cu124.
 
-## 1. Executive summary
+## 1. Purpose and architecture
 
-Oratorical coaching requires temporal precision and causal attribution. Large language models summarize transcripts but do not measure acoustic delivery. Generic audio models classify overall sentiment without localizing delivery errors.
+The app compares a recording with a gold recording of the same text. It reports delivery scores
+and timestamped findings with the affected words, observed values, and reference values.
+The four scoring axes are cadence, tone, pauses, and volume. It does not score content quality.
 
-Speech Delivery Flaw Detector is a contrastive multimodal analytics framework for Track C. It compares candidate speech against a gold-standard reference reading of the identical text. The system operates deterministically. It requires no generative neural models beyond CTC phoneme forced alignment. It extracts frame-level fundamental frequency, root-mean-square vocal energy, and syllable rate. It normalizes pitch in semitones relative to each speaker's median and scales energy relative to the 95th percentile speech frame. This speaker-agnostic normalization isolates oratorical dynamics from biological pitch differences.
+FastAPI accepts audio and transcript uploads. A bounded job queue runs analysis and streams
+progress through Server-Sent Events. The React dashboard displays the report and plays both
+recordings. Pydantic models define the dataset, report, and job contracts. The repository exports
+JSON Schema and generates the frontend types from those models.
 
-The framework detects six flaw types across four delivery axes: cadence, tone, pauses, and volume. Every detection yields millisecond-accurate temporal bounds, the quoted words, and a quantitative causal explanation.
+The pipeline has five stages:
 
-On the benchmark corpus derived from verified public-domain sources, the system was evaluated across seven quantitative criteria:
-- Region precision: 100.0% ($n = 7$, spread = 0.00, release gate: $\ge 70.0\%$, passed).
-- Median boundary error: 86.7 ms ($n = 7$, spread = $\pm 870.4$ ms, release gate: $< 300$ ms, passed).
-- Flaw-type classification accuracy: 100.0% ($n = 7$, spread = 0.00, release gate: $\ge 80.0\%$, passed).
-- Severity rank monotonicity: Spearman $\rho = 0.950$ ($n = 6$, spread = $\pm 0.08$, release gate: $\ge 0.90$, passed).
-- Speaker invariance delta: 0.260 pts ($n = 2$, spread = $\pm 0.06$ pts, release gate: $\le 5.0$ pts, passed).
-- Deterministic reproducibility: 100.0% byte identity ($n = 3$, spread = 0.00, release gate: 100%, passed).
-- Release gates missed: Region recall was 24.1% ($n = 29$, gate $\ge 70.0\%$) and natural reader false-positive rate was 50.0% ($n = 2$, gate $\le 10.0\%$) due to conservative thresholding designed to eliminate false alarms on subtle nuances.
+1. FFmpeg decodes the upload to 16 kHz mono samples. Upload limits are 50 MB and 10 minutes.
+2. Torchaudio MMS CTC aligns transcript characters and produces word timestamps. Inference uses
+   overlapping 30-second chunks with two seconds of context. Low-confidence transcript matches fail.
+3. Praat estimates pitch. The extractor calculates energy, speaking rate, pauses, and supporting
+   clarity measurements on 10 ms frames with 250 ms smoothing.
+4. Contrast mode pairs words with the gold recording and measures delivery differences.
+   Normative mode uses calibrated percentile bands when the transcript has no library match.
+5. The explanation code converts measured differences into text. It does not call a generative model.
 
----
+Pitch uses semitones relative to each speaker's median voiced pitch:
 
-## 2. System architecture and operational modes
+`normalized_pitch = 12 * log2(pitch / median_voiced_pitch)`
 
-The pipeline processes input through five linear stages:
-1. `Decode`: Decodes any 16 kHz to 48 kHz audio container (FLAC, WAV, MP3) into single-channel 16 kHz floating-point samples.
-2. `Align`: Computes character-level trellis emissions and backtracks word boundaries using the Torchaudio MMS CTC multilingual alignment model.
-3. `Extract`: Computes fundamental frequency $F_0$ via Praat autocorrelation, frame root-mean-square energy, and word-level syllable rates.
-4. `Compare`: Aligns candidate and reference sequences. Computes acoustic deviations across rolling 250 ms windows and snaps candidate flaw regions to word boundaries.
-5. `Explain`: Generates mathematical delta attributions and actionable pedagogical recommendations.
+Energy uses decibels relative to the speaker's 95th-percentile speech-frame RMS:
 
-The engine operates in two distinct modes:
+`normalized_energy = 20 * log10(RMS / speech_RMS_p95)`
 
+These transformations reduce differences in raw pitch and recording gain. They do not prove that
+the detector treats every speaker or speaking style correctly.
+
+## 2. Dataset construction
+
+Dataset v1 contains 186 FLAC recordings from six public-domain LibriVox texts. The manifest
+records source URLs, rights evidence, transcripts, word alignments, audio hashes, and flaw labels.
+The texts are The New Colossus, Ozymandias, The Gettysburg Address, Declaration of Independence,
+The Coming of the End, and Dover Beach.
+
+| Recording role | Count |
+| --- | ---: |
+| Gold readings | 6 |
+| Independent natural readers | 6 |
+| Neutral resynthesis controls | 6 |
+| Single-flaw recordings | 144 |
+| Mixed-flaw recordings | 12 |
+| Pitch- and formant-shifted controls | 12 |
+
+The builder modifies word-aligned passages rather than whole recordings. It records transformed
+start and end times and the physical injection parameters. Each flaw has four levels:
+
+| Flaw | Parameter values, levels 1 through 4 |
+| --- | --- |
+| Rush | Rate factors 1.15, 1.30, 1.50, 1.80 |
+| Drag | Rate factors 0.87, 0.77, 0.67, 0.55 |
+| Monotone | Pitch excursion retained 0.70, 0.45, 0.25, 0.05 |
+| Hesitation | Inserted silence 0.25, 0.50, 0.90, 1.50 seconds |
+| Pause collapse | Pause retained 0.70, 0.45, 0.20, 0.00 |
+| Energy fade | Final loss 3, 6, 10, 16 dB across the final 60% of a passage |
+
+Neutral controls pass through the resynthesis pipeline without an injected flaw. Shifted controls
+test sensitivity to pitch and formant changes. These controls are synthetic, not recordings of
+additional speakers. Three natural readers belong to calibration and three to the test split.
+The planned 16 human-recorded held-out clips have not been supplied.
+
+The [dataset v1 release](https://github.com/opx0/speech-delivery-flaw-detector/releases/tag/dataset-v1)
+contains the archive. The repository retains metadata and downloads audio separately. The archive
+SHA-256 is `ca5c16fa9f0503c9f13b60dfdb1f0f2f5322581ff7a51a2bb3e111d91a0cb6da`.
+
+## 3. Detection and scoring
+
+Contrast mode measures word-level cadence, pitch variation, gap excess, gap deficit, and energy
+drop. Each measurement uses a spread learned from calibration readers, with minimum spread
+floors. Kind-specific thresholds exceed the largest calibration-reader evidence by a margin.
+The supplied calibration uses nine reference clips and three reader pairs.
+
+A word that reaches its threshold starts a region. The detector includes nearby words that reach
+half the threshold and merges runs separated by at most one word. Regions shorter than 0.5 seconds
+are discarded. Reported boundaries follow the aligned words, not independently measured human annotations.
+
+For mean region evidence `z`, severity is `1 - exp(-max(z, 0) / 4)`.
+An axis score is `100 * exp(-(4 * burden + residual))`.
+Burden sums each region's severity times its duration and divides by clip duration. Residual
+measures sub-threshold evidence outside marked regions. The overall score is the weighted mean
+of the four axis scores. Default weights are 25% each, and the dashboard permits reweighting.
+
+Normative mode checks window statistics against calibrated bands. Its findings carry lower
+confidence because no recording of the same text provides a direct reference.
+
+## 4. Full evaluation
+
+The evaluation processes all 156 flawed clips, six neutral controls, three held-out natural readers,
+and 12 shifted controls. Gold recordings provide the baselines. It reuses reports between metric
+calculations, but runs analysis afresh three times for the byte-identity check.
+
+Region matching requires the same flaw kind and intersection over union of at least 0.5. The run
+produced 94 true positives, 23 false positives, and 370 false negatives. Type accuracy uses the
+best-overlapping ground-truth region. Boundary errors apply only to successful region matches.
+
+| Metric | Result | Sample size | Target | Outcome |
+| --- | ---: | --- | --- | --- |
+| Region precision | 80.34% | 117 detections | At least 70% | Pass |
+| Region recall | 20.26% | 464 labeled regions | At least 70% | Fail |
+| Median boundary error | 168.45 ms | 94 matches | Below 300 ms | Pass |
+| Flaw-type accuracy | 95.73% | 117 overlaps | At least 80% | Pass |
+| Severity Spearman correlation | 0.914 | 36 series | At least 0.90 | Pass |
+| Held-out reader false-positive rate | 100% | 3 readers | At most 10% | Fail |
+| Mean shifted-control score delta | 0.478 points | 12 pairs | At most 5 points | Pass |
+| Repeated-run byte identity | 100% | 3 runs of one clip | 100% | Pass |
+
+Standard deviations are 375.44 ms for matched boundary errors, 0.140 for severity correlations,
+and 0.280 points for shifted-control score deltas. The run does not estimate uncertainty for
+the aggregate proportions. These spreads are not confidence intervals.
+
+The detector misses 370 of 464 labeled regions. All three held-out readers receive at least one
+finding. Calibration on three reader pairs does not establish reliable generalization. Changing
+thresholds to fit these test readers would contaminate the evaluation. Further calibration data
+and a separate held-out run are needed before claiming reliable coaching accuracy.
+
+The command writes the metrics and per-clip findings to JSON and exits with code 1 when targets fail:
+
+```bash
+TORCH_HOME="$PWD/models/torch" .cache/gpu-venv/bin/python \
+  -m speech_delivery.evaluation --device cuda --output runs/full-evaluation-cuda.json
 ```
-+-------------------------------------------------------------------------+
-|                               Input Audio                               |
-+-------------------------------------------------------------------------+
-                                     |
-                                     v
-                       +---------------------------+
-                       |    Transcript Matcher     |
-                       +---------------------------+
-                                     |
-                 +-------------------+-------------------+
-                 | (Match >= 0.90)                       | (No Library Match)
-                 v                                       v
-   +---------------------------+           +---------------------------+
-   |       Contrast Mode       |           |      Normative Mode       |
-   | Compares against aligned  |           | Compares against p10-p90  |
-   | gold master of same text  |           | reference population bands|
-   +---------------------------+           +---------------------------+
-                 |                                       |
-                 +-------------------+-------------------+
-                                     v
-                       +---------------------------+
-                       |    Four-Axis Scoring      |
-                       |  Cadence | Tone | Pauses  |
-                       |          | Volume         |
-                       +---------------------------+
-```
 
-### Contrast mode
-Applies when the uploaded transcript matches a registered text in the dataset library ($s \ge 0.90$). The candidate audio is aligned word-for-word against the master orator recording. Pitch, volume, and timing trajectories are contrasted against the gold baseline envelope.
+See [the GPU setup guide](LOCAL_SETUP.md#optional-nvidia-gpu-execution) to prepare that environment.
+The CPU command is `uv run --no-sync python -m speech_delivery.evaluation --device cpu`.
 
-### Normative mode
-Applies when the transcript is unscripted or external to the library. The candidate is evaluated against empirical $p_{10}$ to $p_{90}$ percentile bands computed from natural fluent readers during calibration. Findings in normative mode are labeled with standard confidence ratings.
+## 5. Dashboard and deployment verification
 
----
+The browser suite passes against the real GPU backend and the production CPU Docker app.
+It submits The New Colossus dragging-pace
+example and checks findings, playback, reference audio, score reweighting, charts, transcript search,
+mobile layout, and report export. Separate checks cover rejected audio and library failures.
+This proves the selected workflow, not detection accuracy across every demo.
 
-## 3. Acoustic feature extraction and speaker normalization
+The CPU environment passes 158 Python tests. The frontend passes eight logic tests, type checking,
+contract fixture validation, and a production build. Nine alignment and signal tests also pass on CUDA.
 
-Signal processing executes on 10 ms frames with a 250 ms smoothing window (`analysis/constants.py`).
+Docker pins base-image digests, runtime versions, and dependency lockfiles. It downloads the MMS
+checkpoint and dataset release and verifies both checksums. A Linux Docker build and local launch
+have been checked. Native installation on a fresh VM and Windows or macOS deployment still need verification.
+Byte identity between CPU and CUDA, or between native and Docker execution, has not been established.
 
-### Fundamental frequency ($F_0$)
-Pitch is extracted using Praat's robust acoustic periodicity algorithm. To eliminate pitch octave discrepancies between male baritone and female soprano voices, raw Hertz values are converted into semitones centered on the speaker's own median voiced pitch:
+The report renders to four A4 pages with the documented Markdown and Chromium commands.
+Submission work still includes the human recordings and a published 3 to 10 minute demonstration
+video. The video script must use the measured results above, including the failed targets.
 
-$$\Delta F_0(t) = 12 \cdot \log_2 \left( \frac{F_0(t)}{\text{median}(F_0)} \right)$$
+## References
 
-This transformation ensures that a monotone delivery registers an identical pitch standard deviation collapse regardless of the speaker's biological baseline.
-
-### Vocal energy
-Short-time energy is computed as the root-mean-square (RMS) of sample amplitudes over 25 ms windows with a 10 ms hop. Values are expressed in decibels referenced to the speaker's 95th percentile speech frame energy:
-
-$$E_{\text{norm}}(t) = 20 \cdot \log_{10} \left( \frac{\text{RMS}(t)}{\text{RMS}_{p95}} \right)$$
-
-This metric standardizes for microphone gain, distance, and recording volume differences.
-
-### Cadence and pause detection
-Speech rate is measured in words per minute (WPM) and syllables per second. Non-speech intervals between consecutive aligned words exceeding 150 ms are cataloged as pauses. Pauses exceeding 2.0 seconds mid-clause are flagged as hesitation penalties.
-
----
-
-## 4. Taxonomy and causal flaw grounding
-
-The system codifies six atomic flaw types across four rubrics (`contract/taxonomy.py`):
-
-| Flaw kind | Evaluation axis | Primary acoustic feature | Departure direction | Minimum threshold |
-| :--- | :--- | :--- | :--- | :--- |
-| `rush` | Cadence | Syllable speech rate | Above baseline | $> 1.35\times$ baseline rate |
-| `drag` | Cadence | Syllable speech rate | Below baseline | $< 0.70\times$ baseline rate |
-| `monotone` | Tone | Semitone standard deviation | Below baseline | $\sigma < 0.25$ semitones |
-| `hesitation` | Pauses | Inter-word silence duration | Above baseline | $> 1.80$ s mid-clause |
-| `pause_collapse` | Pauses | Inter-sentence punctuation gap | Below baseline | $< 0.20$ s at period/comma |
-| `energy_fade` | Volume | Clause terminal RMS energy | Below baseline | $> 2.0\sigma$ energy decay |
-
-Detected anomalies are aggregated over contiguous frames and snapped to the nearest word boundary. Detected regions must span at least 500 ms to avoid transient noise artifacts.
-
----
-
-## 5. Dataset construction and rights provenance
-
-The benchmark corpus consists of 186 audio clips compiled from public-domain LibriVox recordings (`dataset/registry.py`). Every source is evidenced with public-domain mark URLs and verified metadata.
-
-### Corpus composition
-1. Gold baselines ($n = 6$): Pristine recordings of canonical historical speeches and literature.
-2. Natural readers ($n = 6$): Alternative human readings of the same texts. Used to calibrate normative tolerance bands and measure baseline false-positive rates.
-3. Injected flaw spectrum ($n = 144$): Deterministically resynthesized variations across flaw levels 1 through 4 (Level 0 represents resynthesized neutral control). Resynthesis utilizes Praat PSOLA phase-locked manipulation.
-4. Compound mixes ($n = 12$): Simultaneous multi-flaw injections (for example, rushed cadence combined with energy fade).
-5. Speaker-shifted controls ($n = 12$): Pitch shifted ($\pm 4.0$ semitones) and formant shifted ($0.9\times$ to $1.12\times$) copies to test speaker invariance.
-
----
-
-## 6. Empirical evaluation and release gate verification
-
-The evaluation protocol benchmarks seven quantitative criteria against predefined release gates. In accordance with strict contest integrity guidelines, all numbers are reported with exact sample sizes ($n$), spreads, and unvarnished pass/fail verdicts.
-
-| Metric | Measured value | Sample size ($n$) | Spread | Release gate | Gate verdict |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1. Region precision @ IoU 0.5 | 100.0% | 7 regions | 0.00 | $\ge 70.0\%$ | Passed |
-| 1b. Region recall @ IoU 0.5 | 24.1% | 29 regions | 0.00 | $\ge 70.0\%$ | Missed |
-| 2. Median boundary error | 86.7 ms | 7 matches | $\pm 870.4$ ms | $< 300$ ms | Passed |
-| 3. Flaw-type classification accuracy | 100.0% | 7 matches | 0.00 | $\ge 80.0\%$ | Passed |
-| 4. Severity monotonicity (Spearman $\rho$) | 0.950 | 6 series | $\pm 0.08$ | $\ge 0.90$ | Passed |
-| 5. Natural reader false-positive rate | 50.0% | 2 readers | 0.00 | $\le 10.0\%$ | Missed |
-| 6. Speaker invariance score delta | 0.26 pts | 2 pairs | $\pm 0.06$ pts | $\le 5.0$ pts | Passed |
-| 7. Reproducibility (byte identity) | 100.0% | 3 trials | 0.00 | 100.0% | Passed |
-
-### Analysis of results
-- **Boundary precision**: Snapping to MMS CTC word boundaries achieves a median boundary error of 86.7 ms, outperforming the 300 ms human perception threshold.
-- **Flaw classification and precision**: Every detected region perfectly matched ground truth flaw taxonomy and bounds ($100\%$ precision and $100\%$ type accuracy).
-- **Severity monotonicity**: The Spearman rank correlation of $\rho = 0.950$ confirms that the four-axis scoring penalties scale monotonically with physical flaw magnitude across levels 0 through 4.
-- **Speaker invariance**: Speaker pitch and formant shifting yielded a negligible score change of only 0.26 points, verifying that biological vocal characteristics do not confound oratorical assessment.
-- **Threshold trade-offs (Recall and False Positives)**: Region recall measured 24.1% and held-out natural reader false positive rate measured 50.0%. Calibrating thresholds on natural human readers prevents false alarms on high-confidence readings, but conservative thresholds suppress subtle level 1 and level 2 flaw injections. This trade-off prioritizes high coach trust (zero false accusations when a flaw is declared) over exhaustive recall of mild stylistic variations.
-
----
-
-## 7. Studio workbench dashboard
-
-The redesigned web application (`web/src/`) is a transcript-first speech review workspace:
-- One audible browser player supports participant and aligned gold-reference audition. WaveSurfer.js renders the participant waveform without playing a second audio stream.
-- uPlot displays participant-clock feature curves and gold values or calibrated bands.
-- Rubric sliders derive the overall score and displayed weights from the same local rubric.
-- Timestamped findings link quoted words to severity, observed values, expected values, and explanations.
-- Jobs stream progress through Server-Sent Events. Failed requests remain visible; mock preview is explicit.
-
-A browser run rendered the new welcome page and submitted a real demo, but timed out during
-alignment. The complete redesigned review workflow remains unverified. Further tests are paused
-at the owner's request.
-
----
-
-## 8. Reproducibility and packaging
-
-The repository includes two documented launch paths: Docker and native Linux.
-- Docker base images have immutable digests and exact Node 26.11.1, Python 3.12.14, and uv 0.13.0 versions.
-- Python setup uses `uv.lock` with `uv sync --locked`; Node setup uses `package-lock.json` with `npm ci` and npm 12.2.0.
-- The Dockerfile downloads the pinned MMS checkpoint and verifies its SHA-256 checksum before packaging the weights and provided dataset. Native model-download commands are documented in the launch guide.
-- `.env.example` and `docs/LOCAL_SETUP.md` describe configuration and the sample workflow. Setup and launch do not run tests.
-- Docker, clean-environment, and cross-platform verification remain unrun. The procedure is recorded in `docs/CLEAN_ENVIRONMENT.md`.
-
----
-
-## 9. References and skills consulted
-
-- torchaudio MMS: Multilingual CTC forced alignment architecture.
-- Boersma, P., & Weenink, D. (2024). Praat: doing phonetics by computer (v6.4).
-- Antigravity Skill Reference: `setup-pstack/SKILL.md`, `antigravity_guide/SKILL.md`.
+- [Torchaudio forced alignment tutorial](https://docs.pytorch.org/audio/2.6.0/tutorials/ctc_forced_alignment_api_tutorial.html).
+- [Praat manual](https://www.fon.hum.uva.nl/praat/manual/).
+- Dataset source and rights URLs in `data/dataset/manifest.json`.
+- Scoring and evaluation code in `src/speech_delivery/analysis/` and `src/speech_delivery/evaluation/`.

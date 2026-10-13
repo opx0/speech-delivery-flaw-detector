@@ -1,13 +1,24 @@
 # Verify a clean demo environment
 
-This is a procedure for a future verification run. It has not been executed. The owner requested
-that further tests and clean-environment runs stop during the current redesign and packaging work.
+Use these procedures to check deployment without relying on the developer's local dependencies
+or audio files. Record completed checks separately from procedures that still need another host.
+
+## Recorded Linux checks
+
+On 2026-10-13, the Docker build installed the locked Python dependencies, rebuilt the UI,
+and downloaded and checksum-verified the model and dataset. Its build context excluded local
+environments, model files, and audio. A container check verified and decoded all 186 recordings.
+All three Chromium tests passed against the production Docker application at port 8000.
+
+The native GPU backend also passed the three browser tests. These checks used the current Linux
+host. They do not establish a fresh native VM installation or Windows and macOS deployment.
 
 ## Disposable Docker run
 
 Use a fresh checkout of the intended submission in a disposable VM or another computer. Confirm
-that the checkout contains the lockfiles and `data/dataset/`; a local uncommitted working tree
-does not establish that the submission contains these files.
+that the checkout contains the lockfiles and dataset metadata. Docker retrieves audio from the
+pinned release archive. A local uncommitted working tree does not establish that the submission
+contains these files.
 
 Build without reusing application layers:
 
@@ -16,8 +27,8 @@ docker compose build --no-cache
 docker compose up
 ```
 
-The build context excludes local `.venv`, `web/node_modules`, `web/dist`, `.cache`, and `models`.
-The image must install from the lockfiles, rebuild the UI, and download the pinned weights.
+The build context excludes local `.venv`, `web/node_modules`, `web/dist`, `.cache`, `models`, and dataset audio.
+The image must install from the lockfiles, rebuild the UI, and download the pinned weights and dataset.
 Do not delete the developer's existing caches or environment to simulate a clean run.
 
 Complete the main-feature walkthrough in [the launch guide](LOCAL_SETUP.md). Record whether
