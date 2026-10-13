@@ -1,0 +1,11 @@
+services:
+  speech-delivery:
+    platform: linux/amd64
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:${PORT:-8000}:8000"
+    init: true
+    environment:
+      TORCH_HOME: /app/models/torch
+      UV_CACHE_DIR: /app/.cache/uv

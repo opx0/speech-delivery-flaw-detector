@@ -1,7 +1,7 @@
 """Deterministic, synthetic example payloads for every contract root.
 
 They let the dashboard, the API and the evaluator be built in parallel against realistic data
-before the real pipeline exists. `make contract` writes them to `contract/fixtures/`.
+before the real pipeline exists. `scripts/export_contract.py` writes them to `contract/fixtures/`.
 """
 
 import hashlib

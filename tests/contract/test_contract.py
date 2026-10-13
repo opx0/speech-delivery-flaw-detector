@@ -32,7 +32,7 @@ def dump(model: Any) -> dict[str, Any]:
 def test_committed_fixtures_and_schema_match_the_models() -> None:
     for name, text in fx.render_all().items():
         assert (ROOT / "contract/fixtures" / name).read_text() == text, (
-            f"{name} is stale, run make contract"
+            f"{name} is stale, run uv run --no-sync python scripts/export_contract.py"
         )
     assert (ROOT / "contract/schema/contract.schema.json").read_text() == render_bundle()
 

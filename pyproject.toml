@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Compares a speech against a gold-standard delivery of the same text and pinpoints where and why the delivery deviates."
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.12,<3.13"
+requires-python = "==3.12.14"
 dependencies = [
     "pydantic>=2.9,<3",
     "numpy>=2.0",
@@ -28,6 +28,7 @@ dev = [
 ]
 
 [tool.uv]
+required-version = "==0.13.0"
 index-strategy = "unsafe-best-match"
 
 [[tool.uv.index]]
@@ -40,7 +41,7 @@ torch = { index = "pytorch-cpu" }
 torchaudio = { index = "pytorch-cpu" }
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.28.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]

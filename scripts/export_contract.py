@@ -1,4 +1,4 @@
-"""Write the JSON Schema bundle and the example fixtures. Run through `make contract`."""
+"""Write the contract schema and fixtures: uv run --no-sync python scripts/export_contract.py."""
 
 from pathlib import Path
 

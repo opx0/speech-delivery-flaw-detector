@@ -1,4 +1,4 @@
-"""Export the contract as one JSON Schema bundle. `make contract` compiles it to TypeScript."""
+"""Export the contract schema. `npm --prefix web run contract:ts` generates TypeScript types."""
 
 import json
 from pathlib import Path

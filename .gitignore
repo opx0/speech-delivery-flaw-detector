@@ -11,10 +11,13 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+.audit/
 
 # Node
 node_modules/
 web/dist/
+web/test-results/
+web/playwright-report/
 *.tsbuildinfo
 
 # Local artifacts that are rebuilt, never committed
