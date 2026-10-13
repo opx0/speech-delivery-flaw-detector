@@ -1,0 +1,51 @@
+{
+  "band_thresholds": {
+    "drag": 1.0,
+    "energy_fade": 1.0,
+    "hesitation": 1.0,
+    "monotone": 1.0,
+    "pause_collapse": 1.0,
+    "rush": 1.0
+  },
+  "bands": {
+    "energy_drop": {
+      "high": 5.724089624754715,
+      "low": -4.193878427610888
+    },
+    "pause_fraction": {
+      "high": 0.5670398009950308,
+      "low": -0.11340796019900616
+    },
+    "pitch_variation": {
+      "high": 8.768183341557574,
+      "low": 0.015016115735020819
+    },
+    "rate": {
+      "high": 4.0,
+      "low": 1.0
+    }
+  },
+  "n_calibration_pairs": 3,
+  "n_reference_clips": 9,
+  "scoring": {
+    "burden_gain": 4.0,
+    "residual_gain": 1.0,
+    "severity_scale_z": 4.0
+  },
+  "sigmas": {
+    "cadence": 0.14363224471252947,
+    "energy_drop": 1.5,
+    "gap_deficit": 0.2,
+    "gap_excess": 0.1,
+    "pitch_variation": 2.0310102327242068
+  },
+  "thresholds": {
+    "drag": 2.1433698614660113,
+    "energy_fade": 7.880018161511705,
+    "hesitation": 7.210000000000029,
+    "monotone": 4.1331194320111475,
+    "pause_collapse": 2.809090909090864,
+    "rush": 3.9183695762584767
+  },
+  "version": "092f775d5b8999d705be333a23c17d3c6b13765698257b6123be069281279bcd"
+}
