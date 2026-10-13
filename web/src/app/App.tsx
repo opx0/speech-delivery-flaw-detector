@@ -174,7 +174,7 @@ export function App() {
                     }
                   />
                   <small>
-                    Alignment runs locally on the CPU. Longer recordings take more time.
+                    Alignment runs locally. Longer recordings take more time.
                   </small>
                 </section>
               ) : (

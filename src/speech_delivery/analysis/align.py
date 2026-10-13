@@ -1,5 +1,6 @@
-"""CPU MMS CTC alignment with bounded, overlapping emission inference."""
+"""MMS CTC alignment with bounded inference on CPU or an opt-in CUDA device."""
 
+import os
 from itertools import pairwise
 from threading import Lock
 
@@ -29,7 +30,12 @@ def _model() -> torch.nn.Module:
         # One thread avoids reduction-order changes and oversubscription in API workers.
         torch.set_num_threads(1)
         torch.manual_seed(0)
-        _cached_model = torchaudio.pipelines.MMS_FA.get_model(with_star=False).cpu().eval()
+        device = os.environ.get("SPEECH_DEVICE", "cpu")
+        if device not in {"cpu", "cuda"}:
+            raise ValueError("SPEECH_DEVICE must be cpu or cuda.")
+        if device == "cuda" and not torch.cuda.is_available():
+            raise RuntimeError("CUDA is unavailable. Install CUDA-enabled PyTorch or use CPU.")
+        _cached_model = torchaudio.pipelines.MMS_FA.get_model(with_star=False).to(device).eval()
     return _cached_model
 
 
@@ -44,15 +50,16 @@ def _emission(audio: Audio, model: torch.nn.Module) -> torch.Tensor:
     if count <= 0:
         raise AnalysisError(ErrorCode.ALIGNMENT_FAILED, "Audio is too short to align speech.")
     pieces: list[torch.Tensor] = []
+    device = next(model.parameters()).device
     for first in range(0, count, _CORE_FRAMES):
         last = min(first + _CORE_FRAMES, count)
         context_first = max(0, first - _CONTEXT_FRAMES)
         context_last = min(count, last + _CONTEXT_FRAMES)
         start = context_first * _FRAME_SAMPLES
         end = (context_last - 1) * _FRAME_SAMPLES + _RECEPTIVE_SAMPLES
-        waveform = torch.from_numpy(audio.samples[start:end]).unsqueeze(0)
+        waveform = torch.from_numpy(audio.samples[start:end]).unsqueeze(0).to(device)
         emission, _ = model(waveform)
-        pieces.append(emission[:, first - context_first : last - context_first].clone())
+        pieces.append(emission[:, first - context_first : last - context_first].cpu().clone())
     return torch.cat(pieces, dim=1)
 
 

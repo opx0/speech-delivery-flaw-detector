@@ -21,14 +21,14 @@ test("real demo analysis, playback, reference audition, rubric, charts, and mobi
       response.url().includes("/events") && response.status() === 200,
   );
   await page
-    .getByRole("button", { name: /Rushed pacing Rushed pacing injected/ })
+    .getByRole("button", { name: /Dragging pace Dragging pace injected/ })
     .click();
   await finished;
   await expect(page.getByTestId("overall-score")).toBeVisible({
     timeout: 150_000,
   });
   await expect(
-    page.getByRole("heading", { name: "The New Colossus: rushed pacing" }),
+    page.getByRole("heading", { name: "The New Colossus (new-colossus.drag-l3)" }),
   ).toBeVisible();
   await expect(page.locator(".finding-card").first()).toBeVisible();
   await page.locator(".finding-card").first().click();

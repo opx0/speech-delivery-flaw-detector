@@ -10,17 +10,19 @@ Evaluates:
 7. Deterministic Reproducibility (identical across repeated runs)
 """
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+import torch
 from scipy.stats import spearmanr
 
 from ..analysis.analyzer import build_analyzer
 from ..analysis.calibration import load_calibration
 from ..analysis.signal import analyze_signal
-from ..contract import AnalyzeOptions, ClipRole, FlawKind, Stage
+from ..contract import AnalyzeOptions, ClipLabel, ClipRole, FlawKind, Report, Split, Stage
 from ..library import Library
 
 
@@ -87,6 +89,17 @@ def run_evaluation(
     calib_file = calibration_path or (dataset_dir / "calibration.json")
     calibration = load_calibration(calib_file)
     analyzer = build_analyzer(lib, calibration, signal=analyze_signal)
+    reports: dict[str, Report] = {}
+
+    def report_for(clip: ClipLabel) -> Report:
+        if clip.id not in reports:
+            text = lib.text(clip.text_id)
+            reports[clip.id] = analyzer.analyze(
+                dataset_dir / clip.audio.path,
+                AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
+                _no_op_progress,
+            )
+        return reports[clip.id]
 
     # 1, 2, 3: Region Precision, Recall, Boundary Error, Flaw Accuracy
     flawed_clips = lib.clips(role=ClipRole.FLAWED)
@@ -102,12 +115,7 @@ def run_evaluation(
     print(f"Evaluating {len(flawed_clips)} flawed clips for region accuracy...", flush=True)
     for idx, clip in enumerate(flawed_clips):
         print(f"  [{idx + 1}/{len(flawed_clips)}] Analyzing {clip.id}...", flush=True)
-        text = lib.text(clip.text_id)
-        report = analyzer.analyze(
-            dataset_dir / clip.audio.path,
-            AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-            _no_op_progress,
-        )
+        report = report_for(clip)
 
         gt_flaws = list(clip.flaws)
         detected = list(report.regions)
@@ -140,10 +148,10 @@ def run_evaluation(
         total_fp += len(detected) - len(matched_det)
         total_fn += len(gt_flaws) - len(matched_gt)
 
-    precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) else 1.0
+    precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) else 0.0
     recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) else 0.0
     med_bound_err = float(np.median(boundary_errors_ms)) if boundary_errors_ms else 0.0
-    flaw_type_acc = float(np.mean(type_matches)) * 100.0 if type_matches else 100.0
+    flaw_type_acc = float(np.mean(type_matches)) * 100.0 if type_matches else 0.0
 
     # 4: Severity Monotonicity (Spearman Rank Correlation across L0 to L4)
     spearman_corrs: list[float] = []
@@ -157,11 +165,7 @@ def run_evaluation(
         if not controls:
             continue
         control_clip = controls[0]
-        control_report = analyzer.analyze(
-            dataset_dir / control_clip.audio.path,
-            AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-            _no_op_progress,
-        )
+        control_report = report_for(control_clip)
 
         for kind in FlawKind:
             print(f"  Monotonicity for {text.id} ({kind.value})...", flush=True)
@@ -175,14 +179,10 @@ def run_evaluation(
                     if len(c.flaws) > 0 and c.flaws[0].kind == kind and c.flaws[0].level == lvl
                 ]
                 if matched:
-                    rep = analyzer.analyze(
-                        dataset_dir / matched[0].audio.path,
-                        AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-                        _no_op_progress,
-                    )
+                    rep = report_for(matched[0])
                     severities.append(100.0 - rep.overall)
                 else:
-                    severities.append(severities[-1] + 5.0)
+                    raise ValueError(f"Missing severity level {lvl} for {text.id}/{kind.value}.")
 
             if len(set(severities)) > 1:
                 res: Any = spearmanr(levels_eval, severities)
@@ -190,22 +190,19 @@ def run_evaluation(
                 corr = float(val if val is not None else res[0])
                 if not np.isnan(corr):
                     spearman_corrs.append(corr)
+            else:
+                spearman_corrs.append(0.0)
 
-    mean_spearman = float(np.mean(spearman_corrs)) if spearman_corrs else 0.95
+    mean_spearman = float(np.mean(spearman_corrs)) if spearman_corrs else 0.0
 
     # 5: False-Positive Rate on Natural Readers
-    natural_readers = lib.clips(role=ClipRole.NATURAL_READER)
+    natural_readers = lib.clips(role=ClipRole.NATURAL_READER, split=Split.TEST)
     if max_clips_per_category:
         natural_readers = natural_readers[:2]
     print(f"Evaluating {len(natural_readers)} natural readers...", flush=True)
     nr_false_positive_counts: list[int] = []
     for clip in natural_readers:
-        text = lib.text(clip.text_id)
-        rep = analyzer.analyze(
-            dataset_dir / clip.audio.path,
-            AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-            _no_op_progress,
-        )
+        rep = report_for(clip)
         nr_false_positive_counts.append(len(rep.regions))
 
     nr_fp_rate = (
@@ -223,16 +220,8 @@ def run_evaluation(
     for clip in shifted_clips:
         text = lib.text(clip.text_id)
         control_clip = lib.clips(role=ClipRole.CONTROL, text_id=text.id)[0]
-        c_rep = analyzer.analyze(
-            dataset_dir / control_clip.audio.path,
-            AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-            _no_op_progress,
-        )
-        s_rep = analyzer.analyze(
-            dataset_dir / clip.audio.path,
-            AnalyzeOptions(transcript=text.transcript, library_text_id=text.id),
-            _no_op_progress,
-        )
+        c_rep = report_for(control_clip)
+        s_rep = report_for(clip)
         shift_deltas.append(abs(c_rep.overall - s_rep.overall))
 
     mean_shift_delta = float(np.mean(shift_deltas)) if shift_deltas else 0.0
@@ -286,7 +275,7 @@ def run_evaluation(
             n=len(boundary_errors_ms),
             spread=float(np.std(boundary_errors_ms)) if boundary_errors_ms else 0.0,
             gate="< 300 ms",
-            passed=med_bound_err < 300.0,
+            passed=bool(boundary_errors_ms) and med_bound_err < 300.0,
         ),
         MetricResult(
             name="3. Flaw-Type Accuracy",
@@ -313,7 +302,7 @@ def run_evaluation(
             n=len(natural_readers),
             spread=0.0,
             gate="<= 10%",
-            passed=nr_fp_rate <= 10.0,
+            passed=bool(natural_readers) and nr_fp_rate <= 10.0,
         ),
         MetricResult(
             name="6. Speaker Invariance Score Delta",
@@ -322,7 +311,7 @@ def run_evaluation(
             n=len(shifted_clips),
             spread=float(np.std(shift_deltas)) if shift_deltas else 0.0,
             gate="<= 5.0 pts",
-            passed=mean_shift_delta <= 5.0,
+            passed=bool(shifted_clips) and mean_shift_delta <= 5.0,
         ),
         MetricResult(
             name="7. Reproducibility (Byte Identity)",
@@ -338,10 +327,26 @@ def run_evaluation(
     return EvaluationSummary(
         metrics=metrics,
         details={
+            "runtime": {
+                "device": os.environ.get("SPEECH_DEVICE", "cpu"),
+                "torch_version": torch.__version__,
+            },
             "tp": total_tp,
             "fp": total_fp,
             "fn": total_fn,
             "boundary_errors_ms": boundary_errors_ms,
             "spearman_correlations": spearman_corrs,
+            "flawed_clip_count": len(flawed_clips),
+            "analyzed_clip_count": len(reports),
+            "natural_reader_region_counts": dict(
+                zip((clip.id for clip in natural_readers), nr_false_positive_counts, strict=True)
+            ),
+            "clips": {
+                clip_id: {
+                    "overall": report.overall,
+                    "regions": [region.model_dump(mode="json") for region in report.regions],
+                }
+                for clip_id, report in reports.items()
+            },
         },
     )
