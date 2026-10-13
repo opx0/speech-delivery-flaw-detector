@@ -25,6 +25,8 @@ web/playwright-report/
 models/
 data/work/
 data/raw/
+data/dataset/audio/
+data/*.tar.gz
 runs/
 *.log
 .env

@@ -33,7 +33,13 @@ RUN mkdir -p "$TORCH_HOME/hub/checkpoints" \
     && printf '%s  %s\n' "$MMS_MODEL_SHA256" "$TORCH_HOME/hub/checkpoints/model.pt.download" \
        | sha256sum --check \
     && mv "$TORCH_HOME/hub/checkpoints/model.pt.download" "$TORCH_HOME/hub/checkpoints/model.pt"
-COPY data/dataset/ data/dataset/
+COPY data/dataset/manifest.json data/dataset/calibration.json data/dataset/README.md data/dataset/
+ARG DATASET_URL=https://github.com/opx0/speech-delivery-flaw-detector/releases/download/dataset-v1/speech_delivery_dataset_v1.tar.gz
+ARG DATASET_SHA256=ca5c16fa9f0503c9f13b60dfdb1f0f2f5322581ff7a51a2bb3e111d91a0cb6da
+RUN curl --fail --location --retry 3 "$DATASET_URL" --output /tmp/dataset.tar.gz \
+    && printf '%s  %s\n' "$DATASET_SHA256" /tmp/dataset.tar.gz | sha256sum --check \
+    && tar -xzf /tmp/dataset.tar.gz -C data dataset/audio \
+    && rm /tmp/dataset.tar.gz
 COPY --from=frontend /app/web/dist/ web/dist/
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \

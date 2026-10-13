@@ -1,10 +1,17 @@
-# Speech Delivery Benchmark Dataset (v1)
+# Speech delivery benchmark dataset v1
 
-A benchmark dataset for contrastive speech analytics, temporal flaw grounding, and oratorical scoring.
+A benchmark for comparing speech delivery and testing timestamped flaw detection.
 
 ## Overview
 
-This dataset contains **186 audio recordings** (16 kHz, 16-bit mono FLAC) and verifiable ground truth alignments for evaluating contrastive speech delivery and acoustic flaw detection algorithms. All source recordings originate from verified public-domain LibriVox releases hosted on the Internet Archive.
+The dataset contains 186 recordings in 16 kHz, 16-bit mono FLAC format. Source recordings come
+from public-domain LibriVox releases hosted on the Internet Archive. The manifest includes
+transcripts, alignments, audio hashes, and labels for injected flaw regions.
+
+Download the recordings from [the dataset v1 release](https://github.com/opx0/speech-delivery-flaw-detector/releases/tag/dataset-v1).
+Follow [the download and checksum instructions](../../README.md#dataset). Git tracks the metadata
+and this README, but ignores extracted audio and the local archive. The release archive's
+documentation is a snapshot from publication. This README reflects the current code.
 
 ```
 data/dataset/
@@ -22,7 +29,7 @@ data/dataset/
 
 ---
 
-## Canonical Speeches and Provenance
+## Source texts and provenance
 
 | Text ID | Title | Speaker | Category | Source Archive URL | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -37,20 +44,25 @@ Every source record includes cryptographic SHA-256 hashes and URL-verified publi
 
 ---
 
-## Flaw Taxonomy and Severity Levels
+## Flaw types and severity levels
 
-The dataset injects six atomic delivery flaw types across levels 1 (subtle departure) to 4 (severe delivery breakdown):
+The values below come from `src/speech_delivery/dataset/levels.py`. Each row lists levels 1 through 4.
 
-1. **`rush` (Cadence):** Syllable rate accelerated by 1.35x to 2.4x above baseline.
-2. **`drag` (Cadence):** Syllable rate slowed down to 0.70x to 0.40x of baseline.
-3. **`monotone` (Tone):** Pitch standard deviation collapsed below 0.25 semitones.
-4. **`hesitation` (Pauses):** Unnatural silent pauses exceeding 1.8s inserted mid-clause.
-5. **`pause_collapse` (Pauses):** Essential punctuation pauses between sentences reduced below 0.2s.
-6. **`energy_fade` (Volume):** Vocal energy decay exceeding 2.0 standard deviations at clause terminals.
+| Flaw | Injection parameters |
+| --- | --- |
+| `rush` | Rate factors 1.15, 1.30, 1.50, 1.80 |
+| `drag` | Rate factors 0.87, 0.77, 0.67, 0.55 |
+| `monotone` | Pitch excursion retained 0.70, 0.45, 0.25, 0.05 |
+| `hesitation` | Inserted silence 0.25, 0.50, 0.90, 1.50 seconds |
+| `pause_collapse` | Pause retained 0.70, 0.45, 0.20, 0.00 |
+| `energy_fade` | Final loss 3, 6, 10, 16 dB across the final 60% of the passage |
+
+These injection settings are not the detector's decision thresholds. The manifest labels each
+affected passage. Three natural readers belong to calibration and three to the test split.
 
 ---
 
-## Verification and Inspection
+## Verification and inspection
 
 To load and inspect the dataset programmatically:
 
@@ -58,11 +70,11 @@ To load and inspect the dataset programmatically:
 from pathlib import Path
 from speech_delivery.library import Library
 
-# Load dataset and verify SHA-256 integrity
+# Load the dataset catalog
 lib = Library.load(Path("data/dataset"))
 print(f"Loaded {len(lib.manifest.clips)} clips across {len(lib.manifest.texts)} speeches.")
 
-# Inspect Gettysburg Address gold baseline
+# audio() verifies the clip's SHA-256 before decoding
 gold_clip = lib.gold_for("gettysburg-address")
 audio = lib.audio(gold_clip.id)
 print(f"Gold clip duration: {audio.duration_s:.2f} seconds")
