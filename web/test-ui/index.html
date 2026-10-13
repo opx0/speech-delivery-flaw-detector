@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speech delivery flaw detector</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Speech delivery flaw detector</h1>
+  <p class="sub">Read a text aloud. See exactly where your delivery departs from a gold reading, and why.</p>
+</header>
+
+<main>
+  <section id="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h">1. Choose what you read</h2>
+    <label for="text-select">Speech</label>
+    <select id="text-select"></select>
+    <label for="transcript">Transcript (edit it to analyze any other text)</label>
+    <textarea id="transcript" rows="6"></textarea>
+    <p id="mode-note" class="note"></p>
+
+    <h2>2. Give a recording</h2>
+    <div class="row">
+      <div>
+        <label for="file">Upload audio</label>
+        <input id="file" type="file" accept="audio/*,video/*">
+      </div>
+      <div>
+        <span class="label">Or record</span>
+        <button id="record" type="button">Start recording</button>
+        <span id="record-status" class="note" role="status"></span>
+      </div>
+      <div>
+        <label for="demo-select">Or try a demo clip</label>
+        <select id="demo-select"><option value="">None</option></select>
+      </div>
+    </div>
+    <p id="chosen" class="note" role="status">No recording chosen.</p>
+    <button id="analyze" type="button" class="primary" disabled>Analyze</button>
+  </section>
+
+  <section id="progress" hidden aria-live="polite">
+    <h2>Analyzing</h2>
+    <ol id="stages"></ol>
+    <p id="error" class="error" role="alert" hidden></p>
+  </section>
+
+  <section id="result" hidden>
+    <div id="banner" class="banner" hidden></div>
+    <h2>Result</h2>
+    <div class="score-row">
+      <div class="overall"><span id="overall">0</span><small>/ 100</small></div>
+      <div id="axes"></div>
+    </div>
+    <details>
+      <summary>Adjust how much each axis counts</summary>
+      <div id="weights"></div>
+    </details>
+
+    <h3>Listen</h3>
+    <div class="players">
+      <figure><figcaption>Your recording</figcaption><audio id="player" controls></audio></figure>
+      <figure id="gold-fig"><figcaption>Gold reading, same words</figcaption><audio id="gold" controls></audio>
+        <button id="gold-sync" type="button">Play gold from the same word</button></figure>
+    </div>
+
+    <h3>What was said, flagged words highlighted</h3>
+    <p id="transcript-view" class="transcript"></p>
+
+    <h3>Delivery over time</h3>
+    <div class="row"><label for="feature">Feature</label><select id="feature"></select></div>
+    <canvas id="chart" width="1000" height="260" aria-label="Feature over time with flaw regions"></canvas>
+    <p class="note" id="chart-note"></p>
+
+    <h3>Flaws found <span id="count"></span></h3>
+    <div id="cards"></div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
