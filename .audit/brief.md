@@ -36,7 +36,7 @@ Scoring is deterministic. There is no neural model beyond the CTC forced aligner
 
 - Work in `/home/opx/Projects/hackathons/speech-delivery-flaw-detector`.
 - **Write only inside your own scope** (listed in your task). Other workers are writing next to
-  you right now. Never edit `pyproject.toml`, `uv.lock`, `Makefile`, `README.md`, `.gitignore`,
+  you right now. Never edit `pyproject.toml`, `uv.lock`, `README.md`, `.gitignore`,
   `.github/`, `.audit/`, `contract/`, `src/speech_delivery/contract/`, `audio.py`, `text.py`,
   `library.py`, `analysis/constants.py`, `analysis/protocol.py`, `analysis/recording.py`, or any
   `__init__.py` you were not told you own. If you need a change there, say so in your final
@@ -159,10 +159,12 @@ data/dataset/     the frozen dataset (committed once, after the build is final)
 
 ## Definition of done for the whole project
 
-1. `make check` is green: format, lint, pyright strict, pytest, tsc, fixture validation.
-2. `make dataset` rebuilds `data/dataset/` from the source registry with checksums. The manifest
+1. When verification resumes, the direct Python and npm checks listed in CI pass: format,
+   lint, pyright strict, pytest, tsc, and fixture validation. Verification is currently paused
+   at the owner's request.
+2. `uv run --no-sync python -m speech_delivery.dataset.build` rebuilds `data/dataset/` from the source registry with checksums. The manifest
    validates and every source has rights evidence.
-3. `make eval` prints the seven numbers with n and spread: region precision and recall at IoU
+3. `uv run --no-sync python -m speech_delivery.evaluation` prints the seven numbers with n and spread: region precision and recall at IoU
    0.5, median boundary error in ms, flaw-type accuracy, severity monotonicity (Spearman over
    levels 0 to 4), false-positive rate on natural readers, speaker-agnostic invariance, and
    reproducibility across 3 runs.
