@@ -1,1 +1,1 @@
-"""Owned by its package worker."""
+"""Evaluate detection quality against the benchmark and held-out recordings."""

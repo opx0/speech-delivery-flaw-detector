@@ -1,1 +1,1 @@
-"""Owned by its package worker."""
+"""Acquire, build, inspect, and label the delivery benchmark dataset."""

@@ -1,6 +1,6 @@
 # Project requirements
 
-This record preserves the requirements agreed in the recovered project discussion. It describes
+This record preserves the requirements agreed for the project. It describes
 the intended scope, not proof that every requirement has been implemented or verified.
 See [the README](../README.md#status) for the current status.
 
