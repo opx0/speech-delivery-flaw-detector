@@ -1,0 +1,29 @@
+# Opt-in NVIDIA execution: docker compose -f compose.gpu.yml up --build
+# Requires NVIDIA Container Toolkit. No CPU inference fallback is configured.
+services:
+  speech-delivery:
+    image: speech-delivery-flaw-detector:cuda
+    platform: linux/amd64
+    build:
+      context: .
+      target: cuda
+    ports:
+      - "127.0.0.1:${PORT:-8000}:8000"
+    init: true
+    volumes:
+      - speech-delivery-runs:/app/runs
+    environment:
+      TORCH_HOME: /app/models/torch
+      UV_CACHE_DIR: /app/.cache/uv
+      SPEECH_DEVICE: cuda
+      CUBLAS_WORKSPACE_CONFIG: ":4096:8"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  speech-delivery-runs:

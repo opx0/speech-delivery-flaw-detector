@@ -1,0 +1,15 @@
+SPDX-License-Identifier: CC-BY-4.0
+
+Dataset labels, transcripts authored for this project, and project-produced derived audio
+are licensed under Creative Commons Attribution 4.0 International:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Attribution: speech-delivery-flaw-detector contributors. Include the dataset version and
+project URL: https://github.com/opx0/speech-delivery-flaw-detector
+Identify modifications and retain the recording-specific source and rights evidence from
+manifest.json. This notice does not imply endorsement by the original readers or LibriVox.
+
+Original source recordings retain their recorded public-domain status; this license does
+not impose additional copyright restrictions on public-domain material. Human-held-out
+recordings are excluded from this blanket grant: their permissions and licenses are recorded
+separately in human-held-out.json. Code remains under the repository's MIT license.

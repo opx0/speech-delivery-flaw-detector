@@ -8,12 +8,20 @@ or audio files. Record completed checks separately from procedures that still ne
 On 2026-10-13, the Docker build installed the locked Python dependencies, rebuilt the UI,
 and downloaded and checksum-verified the model and dataset. Its build context excluded local
 environments, model files, and audio. A container check verified and decoded all 186 recordings.
-All three Chromium tests passed against the production Docker application at port 8000.
+The initial three-test Chromium suite passed against the production Docker application at port 8000.
+After the visual redesign, the expanded four-test suite also passed against that application.
+The later five-test suite also checked the shared setup guide, clipboard output and failure,
+deep links, browser history, and review-state preservation against the production image.
 
 The native GPU backend also passed the three browser tests. These checks used the current Linux
 host. They do not establish a fresh native VM installation or Windows and macOS deployment.
 
 ## Disposable Docker run
+
+Additional 2026-10-14 Linux checks: the opt-in CUDA image built and launched, its real API demo
+and file upload passed, and homepage/setup-guide requests returned HTTP 200. A native/CUDA Docker
+report pair for one gold upload was byte-identical. These checks still used the current Linux host,
+not a fresh native VM or Windows/macOS machine. See [the verification record](evaluation/VERIFICATION.md).
 
 Use a fresh checkout of the intended submission in a disposable VM or another computer. Confirm
 that the checkout contains the lockfiles and dataset metadata. Docker retrieves audio from the
@@ -56,6 +64,7 @@ Capture the checkout commit, runtime versions, image digests, setup errors, brow
 and observed workflow results. Label a timed-out or incomplete analysis as incomplete.
 Test output and screenshot artifacts belong outside the submission or in ignored directories.
 
-The existing automated browser suite is optional and requires the real API plus Playwright's
-Chromium installation. It is separate from normal setup and launch; no tests run automatically
-through the documented native installation, native server launch, or Docker image construction.
+The automated browser suite was removed after its requested one-time native-CUDA run: five checks
+passed and one response-body assertion failed. Continue browser verification with the manual
+walkthrough above. No tests run automatically through native installation, server launch, or
+Docker image construction. Playwright is retained for technical-report PDF rendering only.

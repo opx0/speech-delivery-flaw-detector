@@ -1,11 +1,18 @@
 services:
   speech-delivery:
+    image: speech-delivery-flaw-detector:cpu
     platform: linux/amd64
     build:
       context: .
+      target: runtime
     ports:
       - "127.0.0.1:${PORT:-8000}:8000"
     init: true
+    volumes:
+      - speech-delivery-runs:/app/runs
     environment:
       TORCH_HOME: /app/models/torch
       UV_CACHE_DIR: /app/.cache/uv
+
+volumes:
+  speech-delivery-runs:
