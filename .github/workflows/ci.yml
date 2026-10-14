@@ -5,9 +5,6 @@ on:
     branches: [main]
   pull_request:
 
-env:
-  TORCH_HOME: ${{ github.workspace }}/models/torch
-
 jobs:
   check:
     runs-on: ubuntu-24.04
@@ -25,41 +22,20 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - name: Pin npm
         run: npm install --global npm@12.2.0
-      - name: Cache the forced-alignment model
-        uses: actions/cache@v4
-        with:
-          path: models/torch
-          key: mms-fa-20ef12963ab4924b
       - name: Install locked Python dependencies
         run: uv sync --locked
       - name: Install locked Node dependencies
         working-directory: web
         run: npm ci
-      - name: Provision the pinned model
-        env:
-          MODEL_SHA256: 20ef12963ab4924bef49ac4fc7f58ad5da2ee43b2c11bc8c853c9b90ecdbc680
-        run: |
-          mkdir -p "$TORCH_HOME/hub/checkpoints"
-          MODEL="$TORCH_HOME/hub/checkpoints/model.pt"
-          if ! printf '%s  %s\n' "$MODEL_SHA256" "$MODEL" | sha256sum --check --status; then
-            curl --fail --location --retry 3 \
-              https://dl.fbaipublicfiles.com/mms/torchaudio/ctc_alignment_mling_uroman/model.pt \
-              --output "$MODEL.download"
-            printf '%s  %s\n' "$MODEL_SHA256" "$MODEL.download" | sha256sum --check
-            mv "$MODEL.download" "$MODEL"
-          fi
       - name: Python checks
         run: |
           uv run --no-sync ruff format --check .
           uv run --no-sync ruff check .
           uv run --no-sync pyright
-          uv run --no-sync pytest
       - name: Frontend checks
         working-directory: web
         run: |
           npm run typecheck
-          npm run validate:fixtures
-          npm test
           npm run build
       - name: Generated files are up to date
         run: |

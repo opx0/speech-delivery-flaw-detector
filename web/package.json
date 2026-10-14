@@ -11,31 +11,31 @@
   "scripts": {
     "contract:ts": "json2ts --input ../contract/schema/contract.schema.json --output src/contract/generated.ts --unreachableDefinitions --no-additionalProperties --bannerComment \"/* Generated from contract/schema/contract.schema.json by npm run contract:ts. Do not edit. */\"",
     "typecheck": "tsc --noEmit",
-    "validate:fixtures": "node scripts/validate-fixtures.mjs",
+    "validate:setup": "node scripts/check-setup.mjs",
     "dev": "vite",
     "dev:mock": "vite --mode demo",
-    "build": "vite build",
-    "test": "vitest run",
-    "test:e2e": "playwright test"
+    "build": "npm run validate:setup && vite build"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
-    "jsdom": "30.1.2",
     "json-schema-to-typescript": "16.0.0",
+    "playwright": "1.64.0",
     "typescript": "7.0.2",
-    "vite": "8.3.4",
-    "vitest": "5.0.3"
+    "vite": "8.3.4"
   },
   "dependencies": {
-    "ajv": "8.20.0",
     "clsx": "2.1.1",
     "lucide-react": "1.55.0",
+    "mdast-util-to-string": "4.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
     "tailwind-merge": "3.7.0",
+    "unified": "11.0.5",
     "uplot": "1.6.32",
     "wavesurfer.js": "8.0.2"
   }

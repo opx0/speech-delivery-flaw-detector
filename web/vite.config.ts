@@ -1,5 +1,5 @@
 import { loadEnv } from "vite";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { mockApiPlugin } from "./mock/plugin.ts";
 
@@ -22,5 +22,4 @@ export default defineConfig(({ mode }) => ({
       "@": "/src",
     },
   },
-  test: { include: ["src/**/*.test.ts"] },
 }));

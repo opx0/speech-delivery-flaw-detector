@@ -1,7 +1,7 @@
 import { readFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { chromium } from '@playwright/test';
+import { chromium } from 'playwright';
 
 const [input, output] = process.argv.slice(2);
 if (!input || !output) {
