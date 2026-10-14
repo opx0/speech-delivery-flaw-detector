@@ -82,13 +82,20 @@ class Findings:
 
 
 GROW_SHARE = 0.5
+KIND_GROWTH_LIMIT = {FlawKind.ENERGY_FADE: 1.0}
 
 
-def _runs(z: FloatArray, threshold: float) -> list[tuple[int, int]]:
+def region_runs(
+    z: FloatArray, threshold: float, *, growth_limit: float | None = None
+) -> list[tuple[int, int]]:
     """Regions seeded where evidence reaches `threshold` and grown to neighbouring words that
-    reach `GROW_SHARE` of it. Runs separated by at most `MERGE_GAP_WORDS` words are joined."""
+    reach `GROW_SHARE` of it, capped by an optional growth limit. Runs separated by at most
+    `MERGE_GAP_WORDS` words are joined."""
+    growth = GROW_SHARE * threshold
+    if growth_limit is not None:
+        growth = min(growth, growth_limit)
     runs: list[list[int]] = []
-    for k in np.flatnonzero(z >= GROW_SHARE * threshold):
+    for k in np.flatnonzero(z >= growth):
         if runs and k - runs[-1][1] <= MERGE_GAP_WORDS + 1:
             runs[-1][1] = int(k)
         else:
@@ -200,8 +207,10 @@ def compare_to_baseline(
         threshold = calibration.thresholds.of(kind)
         z_by_kind[kind], thresholds[kind] = z, threshold
         flagged[kind] = np.zeros(n, dtype=bool)
-        for first, last in _runs(z, threshold):
+        for first, last in region_runs(z, threshold, growth_limit=KIND_GROWTH_LIMIT.get(kind)):
             if pw[last].end - pw[first].start < MIN_REGION_S:
+                continue
+            if kind is FlawKind.ENERGY_FADE and (last - first < 2 or z[last] - z[first] < 1.0):
                 continue
             matched = [pairing.index[k] for k in range(first, last + 1) if k in pairing.index]
             if not matched:
@@ -320,7 +329,7 @@ def compare_to_bands(
                     word_z[w] = max(word_z[w], z_windows[k])
         z_by_kind[kind], thresholds[kind] = word_z, threshold
         flagged[kind] = np.zeros(len(words), dtype=bool)
-        for first, last in _runs(word_z, threshold):
+        for first, last in region_runs(word_z, threshold):
             if words[last].end - words[first].start < MIN_REGION_S:
                 continue
             idx = [

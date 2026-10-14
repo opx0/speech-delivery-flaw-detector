@@ -33,6 +33,7 @@ FloatArray = NDArray[np.float64]
 MIN_PAIRS = 5
 MIN_PAIRED_SHARE = 0.5
 MIN_WORD_S = 0.03
+CADENCE_RADIUS_WORDS = 2
 TAIL_WORDS = 4
 SENTENCE_PAUSE_MIN_S = 0.4
 WINDOW_S = 2.0
@@ -109,11 +110,14 @@ def _sentence_levels(
     drops: list[tuple[float, float]] = []
     for span in rec.alignment.sentences:
         words = slice(span.first, span.last + 1)
-        relative[words] = means[words] - np.nanmean(means[words])
         tail_first = max(span.first, span.last - TAIL_WORDS + 1)
         tail[tail_first : span.last + 1] = True
         head = means[span.first : tail_first]
         end = means[tail_first : span.last + 1]
+        # Including the fading tail in its own reference subtracts away the early part of a
+        # gradual fade. The unaffected sentence head also removes recording-gain differences.
+        reference = head if head[~np.isnan(head)].size else means[words]
+        relative[words] = means[words] - np.nanmedian(reference)
         if head[~np.isnan(head)].size and end[~np.isnan(end)].size:
             last = rec.alignment.words[span.last]
             drops.append((last.end, float(np.nanmean(head) - np.nanmean(end))))
@@ -158,8 +162,14 @@ def measure_words(participant: Recording, baseline: Recording) -> WordMeasures:
     pv_p = word_means(participant, FeatureName.PITCH_VARIATION)
     pv_b = word_means(baseline, FeatureName.PITCH_VARIATION)
     for i, j in pairing.index.items():
-        length_p = max(pw[i].end - pw[i].start, MIN_WORD_S)
-        length_b = max(bw[j].end - bw[j].start, MIN_WORD_S)
+        local = list(range(max(0, i - CADENCE_RADIUS_WORDS), min(n, i + CADENCE_RADIUS_WORDS + 1)))
+        matched = [pairing.index[k] for k in local if k in pairing.index]
+        if len(matched) != len(local) or matched != list(range(matched[0], matched[-1] + 1)):
+            local, matched = [i], [j]
+        # Pool durations before taking the ratio. Averaging individual word log-ratios lets
+        # a few very short, imprecisely aligned words dominate an otherwise normal phrase.
+        length_p = sum(max(pw[k].end - pw[k].start, MIN_WORD_S) for k in local)
+        length_b = sum(max(bw[k].end - bw[k].start, MIN_WORD_S) for k in matched)
         cadence[i] = math.log(length_b / length_p)
         pitch_var[i] = pv_b[j] - pv_p[i]
 
@@ -191,7 +201,7 @@ def measure_words(participant: Recording, baseline: Recording) -> WordMeasures:
     return WordMeasures(
         pairing=pairing,
         values={
-            Measure.CADENCE: _smooth(_centre(cadence)),
+            Measure.CADENCE: _centre(cadence),
             Measure.PITCH_VARIATION: _smooth(_centre(pitch_var)),
             Measure.GAP_EXCESS: excess,
             Measure.GAP_DEFICIT: deficit,

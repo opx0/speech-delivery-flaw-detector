@@ -172,6 +172,9 @@ def extract_features(audio: Audio, alignment: WordAlignment) -> RecordingFeature
     samples = np.pad(audio.samples, (0, max(0, round(0.1 * SAMPLE_RATE) - len(audio.samples))))
     sound = parselmouth.Sound(samples.astype(np.float64), sampling_frequency=SAMPLE_RATE)
     pitch, median = _pitch(sound, times)
+    # Voicing estimates in quiet aligned gaps can be background periodicity, not speech.
+    # Exclude those frames before pitch-variation windows spread them into adjacent words.
+    pitch[(~speech) & (energy < reference - 25.0)] = np.nan
     harmonicity = sound.to_harmonicity_cc(
         time_step=HOP_S, minimum_pitch=60.0, silence_threshold=0.1, periods_per_window=1.0
     )
