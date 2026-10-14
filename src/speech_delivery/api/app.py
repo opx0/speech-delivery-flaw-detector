@@ -5,9 +5,9 @@ import time
 from collections.abc import AsyncGenerator, Callable, Iterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import TypeAdapter, ValidationError
 
@@ -21,6 +21,7 @@ from ..contract import (
 )
 from ..contract.jobs import MAX_UPLOAD_BYTES
 from ..library import Library
+from .history import RunHistory
 from .job import Job
 from .registry import MAX_QUEUED, JobRegistry, QueueFull
 from .upload import BodyLimit, UploadTooLarge, save_upload
@@ -39,8 +40,9 @@ def create_app(
     max_queued: int = MAX_QUEUED,
     heartbeat_s: float = HEARTBEAT_S,
     clock: Callable[[], float] = time.monotonic,
+    history: RunHistory | None = None,
 ) -> FastAPI:
-    registry = JobRegistry(analyzer, clock=clock, max_queued=max_queued)
+    registry = JobRegistry(analyzer, clock=clock, max_queued=max_queued, history=history)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -51,6 +53,30 @@ def create_app(
         title="Speech delivery flaw detector", lifespan=lifespan, docs_url=None, redoc_url=None
     )
     app.add_middleware(BodyLimit, path="/api/jobs", limit=max_upload_bytes)
+
+    @app.get("/api/runtime")
+    def get_runtime() -> dict[str, str | bool | None]:
+        from ..analysis.align import runtime_info
+
+        return runtime_info()
+
+    @app.get("/api/history")
+    def list_history(
+        limit: Annotated[int, Query(ge=1, le=100)] = 30,
+        offset: Annotated[int, Query(ge=0)] = 0,
+    ) -> dict[str, Any]:
+        if history is None:
+            raise HTTPException(503, "Run history is not enabled on this server.")
+        return history.listing(limit, offset)
+
+    @app.get("/api/history/{job_id}")
+    def get_history(job_id: str) -> dict[str, Any]:
+        if history is None:
+            raise HTTPException(503, "Run history is not enabled on this server.")
+        run = history.get(job_id)
+        if run is None:
+            raise HTTPException(404, "No saved run with this ID.")
+        return run
 
     @app.get("/api/library")
     def get_library() -> LibraryListing:
@@ -81,10 +107,16 @@ def create_app(
         except UploadTooLarge:
             raise HTTPException(413, "The upload is too large.") from None
         try:
-            job = registry.submit(directory, path, parsed)
+            filename = (audio.filename or "Recording").replace("\\", "/").split("/")[-1][:200]
+            job = registry.submit(directory, path, parsed, filename)
         except QueueFull:
             shutil.rmtree(directory, ignore_errors=True)
             raise HTTPException(429, "Too many analyses are waiting. Try again shortly.") from None
+        except Exception:
+            shutil.rmtree(directory, ignore_errors=True)
+            raise HTTPException(
+                503, "Could not save or queue this run. Check server storage and try again."
+            ) from None
         return JobCreated(job_id=job.job_id)
 
     @app.get("/api/jobs/{job_id}/events")

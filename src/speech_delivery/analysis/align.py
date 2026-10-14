@@ -1,5 +1,6 @@
 """MMS CTC alignment with bounded inference on CPU or an opt-in CUDA device."""
 
+import logging
 import os
 from itertools import pairwise
 from threading import Lock
@@ -22,6 +23,20 @@ _CORE_FRAMES = 1500
 _CONTEXT_FRAMES = 100
 # espeak calibration: true text 0.8131, unrelated text 0.1719 on the same clip.
 _MIN_CONFIDENCE = 0.35
+logger = logging.getLogger(__name__)
+
+
+def runtime_info() -> dict[str, str | bool | None]:
+    """Report configuration and the actual cached device without loading model weights."""
+    actual = None
+    if _cached_model is not None:
+        actual = str(next(_cached_model.parameters()).device)
+    return {
+        "requested_alignment_device": os.environ.get("SPEECH_DEVICE", "cpu"),
+        "loaded_alignment_device": actual,
+        "cuda_available": torch.cuda.is_available(),
+        "torch_version": str(torch.__version__),
+    }
 
 
 def _model() -> torch.nn.Module:
@@ -35,7 +50,11 @@ def _model() -> torch.nn.Module:
             raise ValueError("SPEECH_DEVICE must be cpu or cuda.")
         if device == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA is unavailable. Install CUDA-enabled PyTorch or use CPU.")
+        logger.info("ALIGNMENT MODEL | loading MMS weights | requested_device=%s", device)
         _cached_model = torchaudio.pipelines.MMS_FA.get_model(with_star=False).to(device).eval()
+        logger.info(
+            "ALIGNMENT MODEL | ready | loaded_device=%s", next(_cached_model.parameters()).device
+        )
     return _cached_model
 
 
