@@ -24,6 +24,7 @@ from ..analysis.calibration import load_calibration
 from ..analysis.signal import analyze_signal
 from ..contract import AnalyzeOptions, ClipLabel, ClipRole, FlawKind, Report, Split, Stage
 from ..library import Library
+from .metrics import Matching, Span, binomial_interval, match
 
 
 def _no_op_progress(stage: Stage, fraction: float, message: str) -> None:
@@ -120,33 +121,30 @@ def run_evaluation(
         gt_flaws = list(clip.flaws)
         detected = list(report.regions)
 
-        # Match detections to ground truth
-        matched_gt: set[int] = set()
-        matched_det: set[int] = set()
+        matching = match(
+            [Span(f.kind, f.start, f.end) for f in gt_flaws],
+            [Span(r.kind, r.start, r.end) for r in detected],
+        )
+        for truth, predicted in matching.pairs:
+            error = (
+                1000.0 * 0.5 * (abs(predicted.start - truth.start) + abs(predicted.end - truth.end))
+            )
+            boundary_errors_ms.append(error)
+        for detection in detected:
+            best = max(
+                gt_flaws,
+                key=lambda flaw: _compute_iou(detection.start, detection.end, flaw.start, flaw.end),
+                default=None,
+            )
+            if (
+                best is not None
+                and _compute_iou(detection.start, detection.end, best.start, best.end) > 0.0
+            ):
+                type_matches.append(detection.kind == best.kind)
 
-        for d_idx, d in enumerate(detected):
-            best_iou = 0.0
-            best_g_idx = -1
-            for g_idx, g in enumerate(gt_flaws):
-                if g_idx in matched_gt:
-                    continue
-                iou = _compute_iou(d.start, d.end, g.start, g.end)
-                if iou > best_iou:
-                    best_iou = iou
-                    best_g_idx = g_idx
-
-            if best_iou > 0.0 and best_g_idx != -1:
-                g = gt_flaws[best_g_idx]
-                type_matches.append(d.kind == g.kind)
-                if best_iou >= 0.5 and d.kind == g.kind:
-                    matched_gt.add(best_g_idx)
-                    matched_det.add(d_idx)
-                    err = 1000.0 * 0.5 * (abs(d.start - g.start) + abs(d.end - g.end))
-                    boundary_errors_ms.append(err)
-
-        total_tp += len(matched_det)
-        total_fp += len(detected) - len(matched_det)
-        total_fn += len(gt_flaws) - len(matched_gt)
+        total_tp += len(matching.pairs)
+        total_fp += len(detected) - len(matching.pairs)
+        total_fn += len(gt_flaws) - len(matching.pairs)
 
     precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) else 0.0
     recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) else 0.0
@@ -225,6 +223,45 @@ def run_evaluation(
         shift_deltas.append(abs(c_rep.overall - s_rep.overall))
 
     mean_shift_delta = float(np.mean(shift_deltas)) if shift_deltas else 0.0
+
+    # Keep genuine held-out results separate from the synthetic benchmark and calibration.
+    human_clean = lib.clips(role=ClipRole.HUMAN_CLEAN, split=Split.TEST)
+    human_flawed = lib.clips(role=ClipRole.HUMAN_FLAWED, split=Split.TEST)
+    human_results: dict[str, Any] = {
+        "status": "not_available",
+        "clean_clips": len(human_clean),
+        "flawed_clips": len(human_flawed),
+    }
+    if (human_clean or human_flawed) and max_clips_per_category:
+        human_results["status"] = "not_run_in_quick_mode"
+    elif human_clean or human_flawed:
+        clean_counts = {clip.id: len(report_for(clip).regions) for clip in human_clean}
+        human_matches: list[Matching] = []
+        for clip in human_flawed:
+            report = report_for(clip)
+            human_matches.append(
+                match(
+                    [Span(f.kind, f.start, f.end) for f in clip.flaws],
+                    [Span(r.kind, r.start, r.end) for r in report.regions],
+                )
+            )
+        hits = sum(len(matching.pairs) for matching in human_matches)
+        predictions = sum(matching.predicted for matching in human_matches)
+        labels = sum(matching.truth for matching in human_matches)
+        false_readers = sum(count > 0 for count in clean_counts.values())
+        human_results.update(
+            status="evaluated",
+            tp=hits,
+            fp=predictions - hits,
+            fn=labels - hits,
+            precision=hits / predictions if predictions else None,
+            recall=hits / labels if labels else None,
+            reader_false_positive_rate=false_readers / len(clean_counts) if clean_counts else None,
+            clean_region_counts=clean_counts,
+            precision_interval=binomial_interval(hits, predictions),
+            recall_interval=binomial_interval(hits, labels),
+            reader_false_positive_interval=binomial_interval(false_readers, len(clean_counts)),
+        )
 
     # 7: Deterministic Reproducibility
     print("Evaluating deterministic byte reproducibility...", flush=True)
@@ -334,6 +371,20 @@ def run_evaluation(
             "tp": total_tp,
             "fp": total_fp,
             "fn": total_fn,
+            "human_held_out": human_results,
+            "proportion_intervals": {
+                "method": "95% Wilson; assumes independent Bernoulli observations",
+                "limitation": (
+                    "Regions share clips and speakers; intervals do not establish generalization."
+                ),
+                "precision": binomial_interval(total_tp, total_tp + total_fp),
+                "recall": binomial_interval(total_tp, total_tp + total_fn),
+                "type_accuracy": binomial_interval(sum(type_matches), len(type_matches)),
+                "reader_false_positive_rate": binomial_interval(
+                    sum(count > 0 for count in nr_false_positive_counts),
+                    len(nr_false_positive_counts),
+                ),
+            },
             "boundary_errors_ms": boundary_errors_ms,
             "spearman_correlations": spearman_corrs,
             "flawed_clip_count": len(flawed_clips),

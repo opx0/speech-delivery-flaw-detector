@@ -30,3 +30,48 @@ Do not synthesize these recordings or change their timing afterward.
 The project still needs these recordings. Existing LibriVox readers and pitch-shifted controls
 do not fulfill this requirement. Do not report human-held-out evaluation results before the
 recordings and labels exist.
+
+## Import tooling (implemented, not yet verified)
+
+The CUDA-only importer creates a **new** dataset directory; it never changes dataset v1 or
+its calibration. Human takes are always test-only. Write a JSON array beside the original
+recordings. Each item contains:
+
+```json
+{
+  "clip_id": "human-a.new-colossus.rush",
+  "speaker_id": "human-a",
+  "speaker_sex": "unspecified",
+  "text_id": "new-colossus",
+  "take": "rush",
+  "audio": "speaker-a.new-colossus.rush.wav",
+  "license": "original-recording",
+  "permission_to_publish": true,
+  "flaws": [{
+    "kind": "rush", "level": 3, "start": 1.0, "end": 2.0,
+    "words": {"first": 1, "last": 3}, "injection": null
+  }]
+}
+```
+
+The values above illustrate the format; replace them with genuine permissions and manually
+reviewed labels. Do not use these example timestamps as ground truth. Clean takes have
+`"take": "clean"` and `"flaws": []`. Flawed takes use `rush`, `monotone`, or `hesitation`.
+Word indices are zero-based and refer to the library transcript.
+
+Once the actual 16 takes are supplied, the intended command is:
+
+```bash
+SPEECH_DEVICE=cuda TORCH_HOME="$PWD/models/torch" CUBLAS_WORKSPACE_CONFIG=:4096:8 \
+  .cache/gpu-venv/bin/python -m speech_delivery.dataset.human \
+  data/work/human-held-out/takes.json --dataset data/dataset \
+  --out data/dataset-v2 --version 2
+```
+
+The default requires all two-speaker/two-text/four-take combinations. `--allow-partial` permits
+work-in-progress imports but marks the recording plan incomplete. The importer refuses absent
+publication permission, synthetic injection parameters, duplicate takes, and existing output
+directories. Speaker identity and permission metadata are retained in `human-held-out.json`.
+Evaluation reports human results separately under `details.human_held_out`; missing human data
+is explicitly unavailable, never a successful evaluation. No import or evaluation has been run
+for this new tooling yet.

@@ -2,6 +2,7 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from math import sqrt
 from statistics import median
 from typing import Any
 
@@ -11,6 +12,28 @@ from ..contract import FlawKind
 
 IOU_HIT = 0.5
 IOU_TYPE = 0.3
+
+
+def binomial_interval(successes: int, trials: int) -> tuple[float, float] | None:
+    """95% Wilson interval for a proportion, assuming independent Bernoulli trials.
+
+    Correlated regions from one speaker are not independent. This interval is descriptive,
+    not evidence of population-wide speaker generalization.
+    """
+    if trials < 0 or not 0 <= successes <= trials:
+        raise ValueError("successes must be between zero and the nonnegative trial count")
+    if trials == 0:
+        return None
+    z = 1.959963984540054
+    proportion = successes / trials
+    denominator = 1.0 + z * z / trials
+    centre = (proportion + z * z / (2.0 * trials)) / denominator
+    radius = (
+        z
+        * sqrt(proportion * (1.0 - proportion) / trials + z * z / (4.0 * trials * trials))
+        / denominator
+    )
+    return max(0.0, centre - radius), min(1.0, centre + radius)
 
 
 @dataclass(frozen=True, slots=True)
