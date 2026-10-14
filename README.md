@@ -9,13 +9,18 @@ It marks differences and links each region to an explanation. For example, "Rush
 
 ## Status
 
-Updated on 2026-10-13. The React dashboard lets you review the transcript, listen to the gold
+Updated on 2026-10-14. The React dashboard lets you review the transcript, listen to the gold
 recording, navigate the waveform, and inspect acoustic charts and timestamped findings.
-You can also change the scoring weights. See [the UI design references](docs/UI_DESIGN.md).
+You can also change the scoring weights. The Amigo-inspired layout uses top navigation,
+serif headings, and a transcript panel with an attached audio timeline.
+See [the UI design references](docs/UI_DESIGN.md).
 The repository includes the backend, dataset builder, and evaluation code. Submission checks
 remain incomplete.
 
 Completed checks:
+
+These are historical records from earlier revisions, not verification of the latest code.
+Internal development test suites are no longer distributed; live evaluation tools remain.
 
 | Check | Recorded result |
 | --- | --- |
@@ -23,8 +28,8 @@ Completed checks:
 | Python strict type checking | Passed with no errors or warnings |
 | Python tests | 158 passed |
 | Frontend type checking and contract fixture validation | Passed |
-| Frontend tests | 8 passed |
-| Real browser workflow | 3 Chromium tests passed against both the GPU API and the Docker app |
+| Frontend tests | 13 passed, including shared setup-guide checks |
+| Real browser workflow | Real review, playback, export, mobile navigation, and failure states covered by Chromium tests |
 | GPU alignment and signal tests | 9 passed |
 | Production frontend build | Passed |
 | Dataset integrity | Decoded 186 audio files across 6 texts and verified their SHA-256 hashes |
@@ -35,16 +40,23 @@ recordings, and 12 speaker-shifted recordings. The library offers 42 demo clips.
 
 Remaining work:
 
-- Improve detection accuracy. The full GPU evaluation measured 80.34% precision and 20.26% recall.
-  All three held-out natural readers received false-positive findings. Recall and false-positive
+- Improve detection accuracy. The latest full GPU evaluation with a separate recalibration
+  candidate measured 80.31% precision and 21.98% recall. Two of three held-out natural readers
+  received false-positive findings (66.67%). Recall and false-positive
   rate fail their targets. See [the technical report](docs/TECHNICAL_REPORT.md).
 - Add the [held-out human recordings](docs/HUMAN_RECORDINGS.md).
+- Add three independent reader recordings to reach the original three-readers-per-text target.
+- Complete hardware microphone capture and human listening/transcript-quality review.
 - Verify native installation on a fresh VM and deployment on Windows or macOS.
 - Record and publish the [demo video](docs/VIDEO_SCRIPT.md).
 
-The local Docker build and launch passed. The homepage returned HTTP 200, and `/api/library`
-returned 6 texts and 42 demos. The full browser workflow passes on the native GPU backend and
-the production Docker app.
+The CUDA Docker build and live launch passed. The homepage and setup guide returned HTTP 200,
+and the library contained 6 texts and 42 demos. A sampled native/CUDA Docker upload produced
+byte-identical reports. Native CUDA also passed a 600-second API stress check and normative-mode
+upload. A source rebuild regenerated all 186 audio files with matching published hashes.
+These checks do not establish full detector accuracy, microphone capture, or cross-platform support.
+See [the complete verification record](docs/evaluation/VERIFICATION.md) for measured outcomes,
+configuration differences, and outstanding checks.
 
 ## Dataset
 
@@ -75,6 +87,9 @@ The archive contains a `dataset/` directory. The command extracts its 186 record
 ## Launch the demo
 
 Setup downloads the alignment model. You do not need the GitHub Actions cache or an API key.
+Follow [the complete setup guide](docs/LOCAL_SETUP.md) for cloning, Docker CPU, native CPU,
+native NVIDIA GPU, parameters, and troubleshooting. The app renders that same guide at
+[http://localhost:8000/docs](http://localhost:8000/docs), with path selection and copyable commands.
 
 ### Docker
 
@@ -127,9 +142,8 @@ speech-frame energy. This lets it compare delivery changes rather than raw pitch
 | `contract/fixtures/` | Synthetic example payloads for every contract root. |
 | `web/` | The TypeScript dashboard and the types generated from the schema. |
 | `data/dataset/` | Benchmark audio, transcripts, alignment labels, and calibration. |
-| `scripts/` | Contract schema and fixture export. |
+| `scripts/` | Live validation, stress/reproducibility tools, and contract export. |
 | `docs/` | Launch guide, UI references, technical report, and video script. |
-| `tests/` | Python tests. |
 
 ## Develop
 
@@ -139,9 +153,9 @@ digests. See `.env.example` for native settings.
 
 1. Install locked dependencies with `uv sync --locked` and `npm --prefix web ci`.
 2. Start the API, then run `npm run dev` in `web/`. Use `npm run dev:mock` to preview fixture data.
-3. Run Python checks with `uv run --no-sync` commands for Ruff,
-   Pyright, and pytest. Frontend checks use `npm run typecheck`, `npm run validate:fixtures`,
-   `npm test`, and `npm run test:e2e` in `web/`. CI lists these commands.
+3. Static build tooling remains available through Ruff, Pyright, and `npm run typecheck`.
+   Internal unit/debug/UI test suites and their runners were removed at the owner's request.
+   Use the live validation commands below to exercise the actual running application.
 4. After changing a contract model, regenerate its schema, fixtures, and TypeScript types:
 
    ```bash
@@ -149,8 +163,65 @@ digests. See `.env.example` for native settings.
    npm --prefix web run contract:ts
    ```
 
+## Live validation for users and judges
+
+For a native CUDA demo session with one server and categorized terminal output:
+
+```bash
+.cache/gpu-venv/bin/python scripts/start_demo.py
+```
+
+Open http://localhost:8000. The GPU API also serves the built UI; no frontend server is needed.
+The launcher appends categorized logs to `runs/demo.log`; use `tail -f runs/demo.log` in a second
+terminal. Ctrl+C stops the session. It does not run tests, submit audio, or enable mock mode.
+This launcher starts no Vite server.
+
+### Report-only run history
+
+Open **Run history** (http://localhost:8000/history) to inspect saved analyses, including failures.
+Each run preserves its input hash and transcript, submitted options, effective weights, full
+calibration snapshot, runtime device, server stage events, and original report. Export run evidence
+as JSON for later inspection. Scores are delivery scores, not detection-accuracy percentages.
+
+The local journal is `runs/history.sqlite3` (`--history` on the API CLI changes it). Uploaded audio
+is still temporary and removed after analysis; saved history intentionally has no playback. Reports
+and transcripts may be sensitive: the journal is unencrypted, local, and ignored by Git. There is
+no account/authentication layer; keep the API bound to localhost or on a trusted network.
+Earlier runs are not backfilled. Rejected uploads/options are not admitted analysis runs and are
+not journaled. This is run accountability, not a log of human visual sign-off or
+independent evaluation. Compose preserves the journal in its named `speech-delivery-runs` volume.
+
+Start the native CUDA API or the opt-in CUDA Docker app first, then run from the checkout:
+
+```bash
+.cache/gpu-venv/bin/python scripts/validate_live.py --url http://127.0.0.1:8000
+```
+
+This uploads a real dragging-pace demo through the API, displays live progress, confirms the
+uploaded audio hash and actual CUDA model device, and saves findings to `runs/live-validation/`.
+Workflow success and expected-flaw detection are reported separately. It exits with code 1 on
+a failed workflow or missing expected demo flaw. On 2026-10-14, this live workflow passed on
+native CUDA (`cuda:0`): all five stages completed, the audio hash matched, and two dragging-pace
+findings appeared in approximately 16.7 seconds. This is one demo, not a full accuracy benchmark.
+
+For your own recording and the words you actually spoke:
+
+```bash
+.cache/gpu-venv/bin/python scripts/validate_live.py \
+  --audio your-recording.wav --transcript your-transcript.txt
+```
+
+Also retained: the full dataset evaluator, `scripts/verify_gpu.py --stress` for the live ten-minute
+API limit, and `scripts/compare_reports.py` for native/container reports. These are explicit
+evaluation tools, not internal code or UI test suites. Nothing runs automatically during launch.
+Follow [the browser walkthrough](docs/LOCAL_SETUP.md#verify-a-first-analysis) to inspect the UI manually.
+
+Internal development suites and historical browser evidence live separately in a QA Lab workspace
+outside this repository. They are not submission dependencies and do not run during setup or live
+validation.
+
 ## Licenses
 
-The code uses the MIT license. See `LICENSE`. The planned license for dataset labels and derived
-audio is CC BY 4.0. Each source recording keeps its public-domain status.
+The code uses the MIT license. See `LICENSE`. Dataset labels and project-derived audio use
+CC BY 4.0; see [the dataset license](data/dataset/LICENSE). Each source recording keeps its public-domain status.
 The dataset manifest records each recording's source and rights evidence.
