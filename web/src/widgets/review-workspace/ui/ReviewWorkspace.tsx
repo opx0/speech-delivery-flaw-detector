@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import type { Report } from '../../../contract';
-import type { RecordingSource } from '../../../features/analysis-session';
+import type { ActivityEntry, RecordingSource } from '../../../features/analysis-session';
 import type { usePlayback } from '../../../features/playback';
 import { computeOverall } from '../../../features/rubric-reweighting';
 import { downloadJson, formatTime } from '../../../shared/lib';
@@ -27,6 +27,8 @@ export interface ReviewWorkspaceProps {
   recording: RecordingSource;
   playback: ReturnType<typeof usePlayback>;
   onNew: () => void;
+  onViewRun?: () => void;
+  activity: { startedAt: number; logs: ActivityEntry[] };
 }
 
 export function ReviewWorkspace({
@@ -34,12 +36,15 @@ export function ReviewWorkspace({
   recording,
   playback,
   onNew,
+  onViewRun,
+  activity,
 }: ReviewWorkspaceProps) {
   const [weights, setWeights] = useState(report.weights);
   const [selectedId, setSelectedId] = useState<string | null>(
     () => [...report.regions].sort((a, b) => a.start - b.start)[0]?.id ?? null,
   );
   const [tab, setTab] = useState<'transcript' | 'features'>('transcript');
+  const [exportStatus, setExportStatus] = useState<string | null>(null);
 
   const selected = report.regions.find((region) => region.id === selectedId) ?? null;
   const overall = computeOverall(report.axis_scores, weights);
@@ -66,6 +71,7 @@ export function ReviewWorkspace({
       })),
     };
     downloadJson(review, 'speech-review.json');
+    setExportStatus('Download requested: speech-review.json');
   }
 
   return (
@@ -85,6 +91,7 @@ export function ReviewWorkspace({
           </div>
         </div>
         <div className="button-row">
+          {onViewRun && <button className="button secondary" onClick={onViewRun}>Run evidence</button>}
           <button className="button secondary" onClick={exportReport}>
             <ArrowDownToLine size={16} /> Export report
           </button>
@@ -93,6 +100,8 @@ export function ReviewWorkspace({
           </button>
         </div>
       </div>
+
+      {exportStatus && <p className="export-status" role="status">{exportStatus}</p>}
 
       {report.reference.basis === 'band' && (
         <div className="notice">
@@ -215,6 +224,15 @@ export function ReviewWorkspace({
         </aside>
       </div>
 
+      <details className="analysis-activity review-activity">
+        <summary>Analysis complete · {formatTime(Math.max(0, (activity.logs[activity.logs.length - 1]?.at ?? activity.startedAt) - activity.startedAt) / 1000)} elapsed · View activity</summary>
+        <ol aria-label="Completed analysis activity log">
+          {activity.logs.map((entry, i) => <li key={`${entry.at}-${i}`}>
+            <time>{formatTime(Math.max(0, entry.at - activity.startedAt) / 1000)}</time>
+            <span>{entry.message}</span>
+          </li>)}
+        </ol>
+      </details>
       <div className="review-footer">
         <ShieldCheck size={14} />
         <span>Measured from your recording. Scores describe delivery, not content.</span>

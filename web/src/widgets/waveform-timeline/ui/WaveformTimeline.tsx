@@ -31,11 +31,12 @@ export function WaveformTimeline({
     const controller = new AbortController();
     setError(false);
     setLoading(true);
+    const color = getComputedStyle(ref.current).getPropertyValue("--accent").trim();
     const wave = WaveSurfer.create({
       container: ref.current,
       height: 74,
-      waveColor: "#6d89e3",
-      progressColor: "#6d89e3",
+       waveColor: color,
+       progressColor: color,
       barWidth: 2,
       barGap: 2,
       barRadius: 2,

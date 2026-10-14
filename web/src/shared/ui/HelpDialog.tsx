@@ -7,9 +7,14 @@ export interface HelpDialogProps {
 
 export function HelpDialog({ onClose }: HelpDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (opener.current === null && document.activeElement instanceof HTMLElement) {
+      opener.current = document.activeElement;
+    }
     ref.current?.showModal();
+    return () => opener.current?.focus();
   }, []);
 
   return (
@@ -43,7 +48,7 @@ export function HelpDialog({ onClose }: HelpDialogProps) {
         </p>
         <div className="notice">
           <ShieldCheck size={18} />
-          <span>Uploaded files are temporary. This workspace has no account or saved recording history.</span>
+          <span>Uploaded audio is temporary and deleted after processing. Reports, transcripts, parameters, and stage events are saved locally in Run history; audio is not archived. There are no user accounts, so keep this server local or on a trusted network.</span>
         </div>
       </div>
     </dialog>

@@ -8,12 +8,14 @@ export interface DeviationChartProps {
   overlaySeries: OverlaySeries[];
   currentTime: number;
   onSeek: (time: number) => void;
+  inspectionOnly?: boolean;
 }
 
 export function DeviationChart({
   overlaySeries,
   currentTime,
   onSeek,
+  inspectionOnly = false,
 }: DeviationChartProps) {
   const [feature, setFeature] = useState<FeatureName>("speech_rate");
   const series =
@@ -24,6 +26,9 @@ export function DeviationChart({
   seek.current = onSeek;
   useEffect(() => {
     if (!root.current || !series) return;
+    const styles = getComputedStyle(root.current);
+    const accent = styles.getPropertyValue("--accent").trim();
+    const reference = styles.getPropertyValue("--reference").trim();
     const expected = series.expected;
     const x = series.participant.map((_, i) => i * series.hop_s);
     const data: uPlot.AlignedData =
@@ -34,7 +39,7 @@ export function DeviationChart({
       {},
       {
         label: "Your recording",
-        stroke: "#3859db",
+        stroke: accent,
         width: 2,
         points: { show: false },
       },
@@ -43,7 +48,7 @@ export function DeviationChart({
           expected.basis === "baseline"
             ? "Gold reference"
             : "Expected upper range",
-        stroke: "#a18db4",
+        stroke: reference,
         width: 1.5,
         dash: [5, 4],
         points: { show: false },
@@ -52,7 +57,7 @@ export function DeviationChart({
     if (expected.basis === "band")
       plotSeries.push({
         label: "Expected lower range",
-        stroke: "#a18db4",
+        stroke: reference,
         width: 1.5,
         dash: [5, 4],
         points: { show: false },
@@ -67,22 +72,22 @@ export function DeviationChart({
         cursor: { drag: { setScale: false } },
         bands:
           expected.basis === "band"
-            ? [{ series: [2, 3], fill: "rgba(161,141,180,0.12)" }]
+            ? [{ series: [2, 3], fill: "rgba(95,120,103,0.12)" }]
             : [],
         axes: [
           {
             stroke: "#76857e",
             grid: { show: false },
             ticks: { show: false },
-            font: "11px Inter, sans-serif",
+            font: `14px ${styles.fontFamily}`,
             values: (_plot, values) => values.map((value) => formatTime(value)),
           },
           {
             stroke: "#76857e",
             grid: { stroke: "#edf0eb", width: 1 },
             ticks: { show: false },
-            size: 45,
-            font: "11px Inter, sans-serif",
+            size: 55,
+            font: `14px ${styles.fontFamily}`,
           },
         ],
       },
@@ -189,8 +194,8 @@ export function DeviationChart({
         </span>
       </div>
       <p className="chart-note">
-        Click the curve to seek. Use the playback slider for keyboard
-        navigation.
+        {inspectionOnly ? 'Click the curve to inspect measured values. Use the inspection slider for keyboard navigation.'
+          : 'Click the curve to seek. Use the playback slider for keyboard navigation.'}
       </p>
     </div>
   );

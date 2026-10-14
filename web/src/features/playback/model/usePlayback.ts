@@ -169,6 +169,9 @@ export function usePlayback(recording: RecordingSource | null, report: Report | 
         void play();
       }
     },
+    pause() {
+      audioRef.current?.pause();
+    },
     seek,
     playRegion(region: FlawRegion, options: { loop: boolean }) {
       interval.current = { start: region.start, end: region.end, loop: options.loop };

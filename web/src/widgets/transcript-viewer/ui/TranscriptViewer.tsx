@@ -11,6 +11,7 @@ export interface TranscriptViewerProps {
   selectedId: string | null;
   onSeek: (seconds: number) => void;
   onSelect: (id: string) => void;
+  inspectionOnly?: boolean;
 }
 
 export function TranscriptViewer({
@@ -20,6 +21,7 @@ export function TranscriptViewer({
   selectedId,
   onSeek,
   onSelect,
+  inspectionOnly = false,
 }: TranscriptViewerProps) {
   const [query, setQuery] = useState("");
   const matches = query.trim()
@@ -53,7 +55,7 @@ export function TranscriptViewer({
             <button
               className="paragraph-time"
               onClick={() => onSeek(words.words[sentence.first]?.start ?? 0)}
-              aria-label={`Seek to sentence ${index + 1}`}
+              aria-label={`${inspectionOnly ? 'Inspect' : 'Seek to'} sentence ${index + 1}`}
             >
               {formatTime(words.words[sentence.first]?.start ?? 0)}
             </button>
@@ -99,9 +101,9 @@ export function TranscriptViewer({
           <i className="legend-highlight" /> Delivery finding
         </span>
         <span>
-          <i className="legend-playhead" /> Currently speaking
+          <i className="legend-playhead" /> {inspectionOnly ? 'Inspection position' : 'Currently speaking'}
         </span>
-        <span>Click any word to listen from there</span>
+        <span>{inspectionOnly ? 'Click any word to inspect its timestamp' : 'Click any word to listen from there'}</span>
       </div>
     </div>
   );
